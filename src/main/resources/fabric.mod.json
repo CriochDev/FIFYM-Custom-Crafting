@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "id": "fifym-custom-crafting",
+  "version": "${version}",
+  "name": "FIFYM: Custom Crafting",
+  "description": "",
+  "authors": [],
+  "contact": {
+    "repo": "https://github.com/samjb/FIFYM - Custom Crafting"
+  },
+  "license": "All-Rights-Reserved",
+  "icon": "assets/fifym-custom-crafting/icon.png",
+  "environment": "*",
+  "entrypoints": {},
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric": "*",
+    "minecraft": "${minecraft_version}"
+  },
+  "accessWidener" : "fifym-custom-crafting.accesswidener",
+	"mixins": [
+		"fifym-custom-crafting.mixins.json",
+		{
+			"config": "fifym-custom-crafting.client.mixins.json",
+			"environment": "client"
+		}
+	],
+	"custom": {
+		"loom:injected_interfaces": {
+			"net/minecraft/class_1737": ["net/crioch/fifymcustomcrafting/interfaces/ComponentRecipeInputProvider"],
+			"net/minecraft/class_1715": ["net/crioch/fifymcustomcrafting/interfaces/ComponentCraftingInventory"],
+			"net/minecraft/class_1729": ["net/crioch/fifymcustomcrafting/interfaces/ComponentRecipeScreenHandler"]
+		}
+	}
+}
