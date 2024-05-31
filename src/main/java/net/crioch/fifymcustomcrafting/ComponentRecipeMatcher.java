@@ -28,10 +28,6 @@ public class ComponentRecipeMatcher {
     private final Map<Integer, Map<ComponentChanges, Integer>> inputs = new HashMap<>();
     private static final Map<ComponentChanges, Integer> EMPTY = new HashMap<>();
 
-    public int inputCount() {
-        return inputs.size();
-    }
-
     /**
      * Adds a full item stack to the pool of available resources.
      *
