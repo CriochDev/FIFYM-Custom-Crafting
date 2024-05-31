@@ -40,63 +40,29 @@ public abstract class InputSlotFillerMixin implements ComponentInputSlotFiller, 
     @Unique
     private final ComponentRecipeMatcher finder = new ComponentRecipeMatcher();
 
-//    @Inject(method = "<init>", at = @At("RETURN"))
-//    private void setup(AbstractRecipeScreenHandler handler, CallbackInfo ci) {
-//        finder = new ComponentRecipeMatcher();
-//    }
-
-    // For some reason, finder was being cleared when doing the replacements below
-//    @Inject(method = "fillInputSlots(Lnet/minecraft/server/network/ServerPlayerEntity;Lnet/minecraft/recipe/RecipeEntry;Z)V", at = @At("HEAD"), cancellable = true)
-//    public void fillInputSlotsReplacement(ServerPlayerEntity entity, RecipeEntry<? extends Recipe<?>> recipe, boolean craftAll, CallbackInfo ci) {
-//        if (recipe != null && entity.getRecipeBook().contains(recipe)) {
-//            this.inventory = entity.getInventory();
-//            if (this.invokeCanReturnInputs() || entity.isCreative()) {
-//                this.finder.clear();
-//                for (ItemStack itemStack : this.inventory.main) {
-//                    finder.addUnenchantedInput(itemStack);
-//                }
-//                this.handler.populateComponentRecipeFinder(this.finder);
-//                if (this.finder.match(recipe.value(), null)) {
-//                    this.invokeFillInputSlots(recipe, craftAll);
-//                } else {
-//                    this.invokeReturnInputs();
-//                    entity.networkHandler.sendPacket(new CraftFailedResponseS2CPacket(entity.currentScreenHandler.syncId, recipe));
-//                }
-//
-//                entity.getInventory().markDirty();
-//            }
-//        }
-//
-//        ci.cancel();
-//    }
-
     @Redirect(method = "fillInputSlots(Lnet/minecraft/server/network/ServerPlayerEntity;Lnet/minecraft/recipe/RecipeEntry;Z)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/recipe/RecipeMatcher;clear()V"))
     private void replaceClear(RecipeMatcher instance){
         this.finder.clear();
     }
 
     @Redirect(method = "fillInputSlots(Lnet/minecraft/server/network/ServerPlayerEntity;Lnet/minecraft/recipe/RecipeEntry;Z)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerInventory;populateRecipeFinder(Lnet/minecraft/recipe/RecipeMatcher;)V"))
-    private void replaceEntityPopulate(PlayerInventory instance, RecipeMatcher finder) {
+    private void replaceEntityPopulate(PlayerInventory instance, RecipeMatcher recipeMatcher) {
         Iterator<ItemStack> iterator = instance.main.iterator();
 
         while(iterator.hasNext()) {
             ItemStack itemStack = iterator.next();
-            finder.addUnenchantedInput(itemStack);
+            this.finder.addUnenchantedInput(itemStack);
         }
-        return;
     }
 
     @Redirect(method = "fillInputSlots(Lnet/minecraft/server/network/ServerPlayerEntity;Lnet/minecraft/recipe/RecipeEntry;Z)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/screen/AbstractRecipeScreenHandler;populateRecipeFinder(Lnet/minecraft/recipe/RecipeMatcher;)V"))
     private void replaceFill(AbstractRecipeScreenHandler instance, RecipeMatcher recipeMatcher) {
         instance.populateComponentRecipeFinder(this.finder);
-        return;
     }
 
     @Redirect(method = "fillInputSlots(Lnet/minecraft/server/network/ServerPlayerEntity;Lnet/minecraft/recipe/RecipeEntry;Z)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/recipe/RecipeMatcher;match(Lnet/minecraft/recipe/Recipe;Lit/unimi/dsi/fastutil/ints/IntList;)Z"))
     private boolean replaceMatch(RecipeMatcher instance, Recipe<?> recipe, @Nullable IntList output) {
-        int count = this.finder.inputCount();
-        boolean result = this.finder.match(recipe, null);
-        return result;
+        return this.finder.match(recipe, null);
     }
 
     @Inject(method = "fillInputSlots(Lnet/minecraft/recipe/RecipeEntry;Z)V", at = @At(value = "HEAD"), cancellable = true)
@@ -112,7 +78,7 @@ public abstract class InputSlotFillerMixin implements ComponentInputSlotFiller, 
                 return;
             }
         }
-        j = this.invokeGetAmountToFill(craftAll, i, bl);
+        j = this.getAmountToFill(craftAll, i, bl);
         List<ItemStack> stackList = new ArrayList<>();
         if (this.finder.match(recipe.value(), stackList, j)) {
             int k = j;
@@ -125,24 +91,28 @@ public abstract class InputSlotFillerMixin implements ComponentInputSlotFiller, 
             }
             j = k;
             if (this.finder.match(recipe.value(), stackList, j)) {
-                this.invokeReturnInputs();
+                this.returnInputs();
                 this.alignComponentRecipeToGrid(this.handler.getCraftingWidth(), this.handler.getCraftingHeight(), this.handler.getCraftingResultSlotIndex(), recipe, stackList.iterator(), j);
             }
         }
         ci.cancel();
     }
 
-    @Invoker(value = "getAmountToFill")
-    abstract int invokeGetAmountToFill(boolean craftAll, int limit, boolean recipeInCraftingSlots);
+    @Shadow
+    protected int getAmountToFill(boolean craftAll, int limit, boolean recipeInCraftingSlots) {
+        return 0;
+    }
 
-    @Invoker(value = "returnInputs")
-    abstract void invokeReturnInputs();
+    @Shadow
+    protected void returnInputs() {}
 
-    @Invoker(value = "canReturnInputs")
-    abstract boolean invokeCanReturnInputs();
+    @Shadow
+    private boolean canReturnInputs() {
+        return false;
+    }
 
-    @Invoker(value = "fillInputSlots")
-    abstract void invokeFillInputSlots(RecipeEntry<? extends Recipe<?>> recipe, boolean craftAll);
+    @Shadow
+    protected void fillInputSlots(RecipeEntry<? extends Recipe<?>> recipe, boolean craftAll) {}
 
     @Override
     public void acceptAlignedInput(Iterator<ItemStack> inputs, int slot, int amount, int gridX, int gridY) {
@@ -150,14 +120,15 @@ public abstract class InputSlotFillerMixin implements ComponentInputSlotFiller, 
         ItemStack itemStack = inputs.next();
         if (!itemStack.isEmpty()) {
             for (int i = 0; i < amount; ++i) {
-                this.invokeFillInputSlot(slot2, itemStack);
+                this.fillInputSlot(slot2, itemStack);
             }
         }
     }
 
-    @Invoker(value = "fillInputSlot")
-    abstract void invokeFillInputSlot(Slot slot2, ItemStack itemStack);
+    @Shadow
+    protected void fillInputSlot(Slot slot2, ItemStack itemStack) {
 
+    }
 
 
     @Override
