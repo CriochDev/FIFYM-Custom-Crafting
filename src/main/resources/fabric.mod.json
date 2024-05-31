@@ -29,7 +29,8 @@
 		"loom:injected_interfaces": {
 			"net/minecraft/class_1737": ["net/crioch/fifymcustomcrafting/interfaces/ComponentRecipeInputProvider"],
 			"net/minecraft/class_1715": ["net/crioch/fifymcustomcrafting/interfaces/ComponentCraftingInventory"],
-			"net/minecraft/class_1729": ["net/crioch/fifymcustomcrafting/interfaces/ComponentRecipeScreenHandler"]
+			"net/minecraft/class_1729": ["net/crioch/fifymcustomcrafting/interfaces/ComponentRecipeScreenHandler"],
+            "net/minecraft/class_1661": ["net/crioch/fifymcustomcrafting/interfaces/ComponentPlayerInventory"]
 		}
 	}
 }

@@ -3,9 +3,11 @@
   "package": "net.crioch.fifymcustomcrafting.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "IngredientMixin",
     "Ingredient$StackEntryMixin",
+    "IngredientMixin",
     "InputSlotFillerMixin",
+    "ShapelessRecipeMixin",
+    "entity.PlayerInventoryMixin",
     "recipeinputprovider.AbstractFurnaceBlockEntityMixin",
     "recipeinputprovider.CrafterBlockEntityMixin",
     "recipeinputprovider.CraftingInventoryMixin",
@@ -16,5 +18,5 @@
   ],
   "injectors": {
     "defaultRequire": 1
-	}
+  }
 }
