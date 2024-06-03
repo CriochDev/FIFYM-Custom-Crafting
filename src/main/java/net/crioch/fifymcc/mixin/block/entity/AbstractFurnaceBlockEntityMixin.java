@@ -36,9 +36,7 @@ public class AbstractFurnaceBlockEntityMixin implements ComponentRecipeInputProv
 
     @Inject(method = "canUseAsFuel", at = @At("HEAD"), cancellable = true)
     private static void canUseAsFuel(ItemStack stack, CallbackInfoReturnable<Boolean> cir) {
-        ComponentMap components = stack.getComponents();
-
-        Util.LOGGER.info("Fuel Value: {}", stack.getComponents().contains(FIFYDataComponentTypes.FUEL_VALUE));
-        cir.setReturnValue(stack.getComponents().contains(FIFYDataComponentTypes.FUEL_VALUE));
+        if (stack.getComponents().contains(FIFYDataComponentTypes.FUEL_VALUE))
+            cir.setReturnValue(true);
     }
 }
