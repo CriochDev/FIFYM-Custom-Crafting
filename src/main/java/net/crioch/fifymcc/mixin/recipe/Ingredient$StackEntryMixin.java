@@ -19,19 +19,17 @@ import net.minecraft.recipe.Ingredient;
 
 @Mixin(Ingredient.StackEntry.class)
 public class Ingredient$StackEntryMixin {
-	@Shadow
-	@Final
-	@Mutable
-	private static Codec<Ingredient.StackEntry> CODEC;
+    @Shadow
+    @Final
+    @Mutable
+    private static Codec<Ingredient.StackEntry> CODEC;
 
-	@Inject(method = "<clinit>", at = @At(value = "RETURN"))
-	private static void clinit(CallbackInfo ci) {
+    static {
+        CODEC = RecordCodecBuilder.create(instance -> instance.group(((MapCodec<ItemStack>)ItemStack.REGISTRY_ENTRY_CODEC.fieldOf("item")).forGetter(Ingredient.StackEntry::stack), ComponentChanges.CODEC.optionalFieldOf("components", ComponentChanges.EMPTY).forGetter(stack -> stack.stack().getComponentChanges())).apply(instance, (stack, changed) -> Ingredient$StackEntryMixin.init(new ItemStack(stack.getRegistryEntry(), 1, changed))));
+    }
 
-		CODEC = RecordCodecBuilder.create(instance -> instance.group(((MapCodec<ItemStack>)ItemStack.REGISTRY_ENTRY_CODEC.fieldOf("item")).forGetter(Ingredient.StackEntry::stack), ComponentChanges.CODEC.optionalFieldOf("components", ComponentChanges.EMPTY).forGetter(stack -> stack.stack().getComponentChanges())).apply(instance, (stack, changed) -> Ingredient$StackEntryMixin.init(new ItemStack(stack.getRegistryEntry(), 1, changed))));
-	}
-
-	@Invoker("<init>")
-	private static Ingredient.StackEntry init(ItemStack stack) {
-		throw new AssertionError();
-	}
+    @Invoker("<init>")
+    private static Ingredient.StackEntry init(ItemStack stack) {
+        throw new AssertionError();
+    }
 }
