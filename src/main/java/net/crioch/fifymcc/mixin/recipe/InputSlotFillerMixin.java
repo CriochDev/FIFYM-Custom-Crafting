@@ -1,4 +1,4 @@
-package net.crioch.fifymcc.mixin;
+package net.crioch.fifymcc.mixin.recipe;
 
 import net.crioch.fifymcc.interfaces.ComponentInputSlotFiller;
 import it.unimi.dsi.fastutil.ints.IntList;
