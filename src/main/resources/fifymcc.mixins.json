@@ -1,0 +1,24 @@
+{
+  "required": true,
+  "package": "net.crioch.fifymcc.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "Ingredient$StackEntryMixin",
+    "IngredientMixin",
+    "InputSlotFillerMixin",
+    "ShapelessRecipeMixin",
+    "block.entity.AbstractFurnaceBlockEntityMixin",
+    "enchantment.EnchantmentHelperMixin",
+    "entity.PlayerInventoryMixin",
+    "recipeinputprovider.AbstractFurnaceBlockEntityMixin",
+    "recipeinputprovider.CrafterBlockEntityMixin",
+    "recipeinputprovider.CraftingInventoryMixin",
+    "recipeinputprovider.SimpleInventoryMixin",
+    "screenhandler.AbstractFurnaceScreenHandlerMixin",
+    "screenhandler.CraftingScreenHandlerMixin",
+    "screenhandler.PlayerScreenHandlerMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
