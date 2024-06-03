@@ -1,4 +1,4 @@
-package net.crioch.fifymcc.mixin;
+package net.crioch.fifymcc.mixin.recipe;
 
 import net.minecraft.component.ComponentChanges;
 import net.minecraft.item.ItemStack;

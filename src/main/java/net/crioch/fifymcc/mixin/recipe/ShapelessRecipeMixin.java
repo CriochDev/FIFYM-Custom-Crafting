@@ -1,4 +1,4 @@
-package net.crioch.fifymcc.mixin;
+package net.crioch.fifymcc.mixin.recipe;
 
 import net.crioch.fifymcc.recipe.ComponentRecipeMatcher;
 import net.minecraft.inventory.RecipeInputInventory;

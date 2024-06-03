@@ -1,22 +1,24 @@
-package net.crioch.fifymcc.mixin.recipeinputprovider;
+package net.crioch.fifymcc.mixin.inventory;
 
 import net.crioch.fifymcc.recipe.ComponentRecipeMatcher;
 import net.crioch.fifymcc.interfaces.ComponentRecipeInputProvider;
-import net.minecraft.block.entity.AbstractFurnaceBlockEntity;
+import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.collection.DefaultedList;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
-@Mixin(AbstractFurnaceBlockEntity.class)
-public class AbstractFurnaceBlockEntityMixin implements ComponentRecipeInputProvider {
+@Mixin(CraftingInventory.class)
+public class CraftingInventoryMixin implements ComponentRecipeInputProvider {
+    @Final
     @Shadow
-    protected DefaultedList<ItemStack> inventory;
+    private DefaultedList<ItemStack> stacks;
 
     @Override
     public void provideComponentRecipeInputs(ComponentRecipeMatcher finder) {
-        for (ItemStack itemStack : this.inventory) {
-            finder.addInput(itemStack);
+        for (ItemStack itemStack : this.stacks) {
+            finder.addUnenchantedInput(itemStack);
         }
     }
 }

@@ -1,4 +1,4 @@
-package net.crioch.fifymcc.mixin;
+package net.crioch.fifymcc.mixin.recipe;
 
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -23,6 +23,7 @@ public class Ingredient$StackEntryMixin {
 	@Final
 	@Mutable
 	private static Codec<Ingredient.StackEntry> CODEC;
+
 	@Inject(method = "<clinit>", at = @At(value = "RETURN"))
 	private static void clinit(CallbackInfo ci) {
 
