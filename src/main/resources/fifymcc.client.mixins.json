@@ -1,14 +1,15 @@
 {
-	"required": true,
-	"package": "net.crioch.fifymcc.mixin",
-	"compatibilityLevel": "JAVA_21",
-	"client": [],
-	"injectors": {
-		"defaultRequire": 1
-	},
-	"mixins": [
-		"client.RecipeBookWidgetMixin",
-		"client.RecipeResultCollectionMixin",
-		"entity.PlayerInventoryMixin"
-	]
+  "required": true,
+  "package": "net.crioch.fifymcc.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "client": [],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "mixins": [
+    "client.RecipeBookWidgetMixin",
+    "client.RecipeResultCollectionMixin",
+    "entity.PlayerInventoryMixin",
+    "recipe.Ingredient$TagEntryMixin"
+    ]
 }
