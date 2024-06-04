@@ -2,6 +2,7 @@ package net.crioch.fifymcc.mixin.recipe;
 
 import net.crioch.fifymcc.interfaces.ComponentInputSlotFiller;
 import it.unimi.dsi.fastutil.ints.IntList;
+import net.crioch.fifymcc.interfaces.ComponentRecipeScreenHandler;
 import net.crioch.fifymcc.recipe.ComponentRecipeMatcher;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
@@ -51,7 +52,7 @@ public abstract class InputSlotFillerMixin implements ComponentInputSlotFiller, 
 
     @Redirect(method = "fillInputSlots(Lnet/minecraft/server/network/ServerPlayerEntity;Lnet/minecraft/recipe/RecipeEntry;Z)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/screen/AbstractRecipeScreenHandler;populateRecipeFinder(Lnet/minecraft/recipe/RecipeMatcher;)V"))
     private void replaceFill(AbstractRecipeScreenHandler instance, RecipeMatcher recipeMatcher) {
-        instance.populateComponentRecipeFinder(this.finder);
+        ((ComponentRecipeScreenHandler)(Object)instance).populateComponentRecipeFinder(this.finder);
     }
 
     @Redirect(method = "fillInputSlots(Lnet/minecraft/server/network/ServerPlayerEntity;Lnet/minecraft/recipe/RecipeEntry;Z)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/recipe/RecipeMatcher;match(Lnet/minecraft/recipe/Recipe;Lit/unimi/dsi/fastutil/ints/IntList;)Z"))
@@ -62,7 +63,7 @@ public abstract class InputSlotFillerMixin implements ComponentInputSlotFiller, 
     @Inject(method = "fillInputSlots(Lnet/minecraft/recipe/RecipeEntry;Z)V", at = @At(value = "HEAD"), cancellable = true)
     private void fillInputSlotsClient(RecipeEntry<? extends Recipe<? extends Inventory>> recipe, boolean craftAll, CallbackInfo ci) {
         int j;
-        boolean bl = this.handler.matchesWithComponents(recipe);
+        boolean bl = ((ComponentRecipeScreenHandler)(Object)this.handler).matchesWithComponents(recipe);
         int i = this.finder.countCrafts(recipe, null);
         if (bl) {
             for (j = 0; j < this.handler.getCraftingHeight() * this.handler.getCraftingWidth() + 1; ++j) {
