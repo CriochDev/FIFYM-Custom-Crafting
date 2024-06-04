@@ -2,10 +2,12 @@ package net.crioch.fifymcc.mixin.enchantment;
 
 import com.llamalad7.mixinextras.sugar.Local;
 import net.crioch.fifymcc.components.FIFYDataComponentTypes;
+import net.minecraft.component.ComponentMap;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
@@ -24,13 +26,8 @@ public class EnchantmentHelperMixin {
         return getActualEnchantability(stack);
     }
 
+    @Unique
     private static int getActualEnchantability(ItemStack stack) {
-        int defaultValue = stack.getItem().getEnchantability();
-        Optional<Integer> enchantability = (Optional<Integer>) stack.getComponentChanges().get(FIFYDataComponentTypes.ENCHANTABILITY);
-        if (enchantability != null) {
-            return enchantability.orElse(defaultValue);
-        } else {
-            return stack.getComponents().getOrDefault(FIFYDataComponentTypes.ENCHANTABILITY, defaultValue);
-        }
+        return stack.getComponents().getOrDefault(FIFYDataComponentTypes.ENCHANTABILITY, 0);
     }
 }
