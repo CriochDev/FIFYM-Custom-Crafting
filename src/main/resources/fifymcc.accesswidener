@@ -1,5 +1,6 @@
 accessWidener v2 named
 
+accessible class net/minecraft/component/ComponentMap$Builder$SimpleComponentMap
 accessible class net/minecraft/recipe/Ingredient$StackEntry
 accessible class net/minecraft/recipe/Ingredient$TagEntry
 accessible class net/minecraft/recipe/RecipeMatcher$Matcher
