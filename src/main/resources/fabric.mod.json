@@ -26,13 +26,5 @@
 			"config": "fifymcc.client.mixins.json",
 			"environment": "client"
 		}
-	],
-	"custom": {
-		"loom:injected_interfaces": {
-			"net/minecraft/class_1737": ["net/crioch/fifymcc/interfaces/ComponentRecipeInputProvider"],
-			"net/minecraft/class_1715": ["net/crioch/fifymcc/interfaces/ComponentCraftingInventory"],
-			"net/minecraft/class_1729": ["net/crioch/fifymcc/interfaces/ComponentRecipeScreenHandler"],
-            "net/minecraft/class_1661": ["net/crioch/fifymcc/interfaces/ComponentPlayerInventory"]
-		}
-	}
+	]
 }
