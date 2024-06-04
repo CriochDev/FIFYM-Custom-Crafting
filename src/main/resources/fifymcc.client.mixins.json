@@ -9,7 +9,6 @@
   "mixins": [
     "client.RecipeBookWidgetMixin",
     "client.RecipeResultCollectionMixin",
-    "component.SimpleComponentMapMixin",
     "entity.PlayerInventoryMixin",
     "recipe.Ingredient$TagEntryMixin"
   ]
