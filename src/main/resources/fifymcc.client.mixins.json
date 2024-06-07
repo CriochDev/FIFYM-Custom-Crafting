@@ -8,8 +8,6 @@
   },
   "mixins": [
     "client.RecipeBookWidgetMixin",
-    "client.RecipeResultCollectionMixin",
-    "entity.PlayerInventoryMixin",
-    "recipe.Ingredient$TagEntryMixin"
+    "client.RecipeResultCollectionMixin"
   ]
 }

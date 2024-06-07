@@ -29,9 +29,9 @@ public class ComponentRecipeMatcher {
     private static final Map<ComponentChanges, Integer> EMPTY = new HashMap<>();
 
     /**
-     * Adds a full item stack to the pool of available resources.
+     * Adds a full item remainder to the pool of available resources.
      *
-     * <p>This is equivalent to calling {@code addInput(stack, Item.DEFAULT_MAX_COUNT)}.
+     * <p>This is equivalent to calling {@code addInput(remainder, Item.DEFAULT_MAX_COUNT)}.
      */
     public void addUnenchantedInput(ItemStack stack) {
         if (!(stack.isDamaged() || stack.hasEnchantments() || stack.contains(DataComponentTypes.CUSTOM_NAME))) {
@@ -40,16 +40,16 @@ public class ComponentRecipeMatcher {
     }
 
     /**
-     * Adds a full item stack to the pool of available resources.
+     * Adds a full item remainder to the pool of available resources.
      *
-     * <p>This is equivalent to calling {@code addInput(stack, Item.DEFAULT_MAX_COUNT)}.
+     * <p>This is equivalent to calling {@code addInput(remainder, Item.DEFAULT_MAX_COUNT)}.
      */
     public void addInput(ItemStack stack) {
         this.addInput(stack, stack.getMaxCount());
     }
 
     /**
-     * Adds an item stack to the pool of available resources.
+     * Adds an item remainder to the pool of available resources.
      */
     public void addInput(ItemStack stack, int maxCount) {
         if (!stack.isEmpty()) {
@@ -66,7 +66,8 @@ public class ComponentRecipeMatcher {
     }
 
     public static RecipeKey getKey(ItemStack stack) {
-        return new RecipeKey(ComponentRecipeMatcher.getItemId(stack), stack.getComponentChanges());
+        ComponentChanges componentChanges = FIFYMRecipeMatcherHelper.removeIgnoredChanges(stack.getComponentChanges());
+        return new RecipeKey(ComponentRecipeMatcher.getItemId(stack), componentChanges);
     }
 
     public static int getItemId(ItemStack stack) {
