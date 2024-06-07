@@ -1,8 +1,7 @@
 package net.crioch.fifymcc.mixin.enchantment;
 
 import com.llamalad7.mixinextras.sugar.Local;
-import net.crioch.fifymcc.components.FIFYDataComponentTypes;
-import net.minecraft.component.ComponentMap;
+import net.crioch.fifymcc.component.FIFYDataComponentTypes;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -10,8 +9,6 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
-
-import java.util.Optional;
 
 @Mixin(EnchantmentHelper.class)
 public class EnchantmentHelperMixin {

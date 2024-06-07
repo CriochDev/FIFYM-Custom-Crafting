@@ -1,4 +1,4 @@
-package net.crioch.fifymcc.components;
+package net.crioch.fifymcc.component;
 
 import net.crioch.fifymcc.util.Util;
 import net.minecraft.component.DataComponentType;
@@ -12,10 +12,12 @@ import java.util.function.UnaryOperator;
 public class FIFYDataComponentTypes {
     public static DataComponentType<Integer> ENCHANTABILITY;
     public static DataComponentType<Integer> FUEL_VALUE;
+    public static DataComponentType<RecipeRemainder> RECIPE_REMAINDER;
 
     public static void register() {
         ENCHANTABILITY = FIFYDataComponentTypes.register("enchantability", builder -> builder.codec(Codecs.NONNEGATIVE_INT).packetCodec(PacketCodecs.VAR_INT));
         FUEL_VALUE = FIFYDataComponentTypes.register("fuel_value", builder -> builder.codec(Codecs.POSITIVE_INT).packetCodec(PacketCodecs.VAR_INT));
+        RECIPE_REMAINDER = FIFYDataComponentTypes.register("recipe_remainder", builder -> builder.codec(RecipeRemainder.CODEC).packetCodec(RecipeRemainder.PACKET_CODEC));
     }
 
     private static <T> DataComponentType<T> register(String id, UnaryOperator<DataComponentType.Builder<T>> builderOperator) {

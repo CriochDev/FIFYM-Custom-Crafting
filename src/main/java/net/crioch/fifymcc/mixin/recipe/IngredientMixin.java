@@ -1,5 +1,6 @@
 package net.crioch.fifymcc.mixin.recipe;
 
+import net.crioch.fifymcc.component.FIFYDataComponentTypes;
 import net.minecraft.component.ComponentChanges;
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.Ingredient;
@@ -18,7 +19,7 @@ public class IngredientMixin {
 		ComponentChanges recipeChanges = recipeStack.getComponentChanges();
 		ComponentChanges itemChanges = itemStack.getComponentChanges();
 		boolean result;
-		if (recipeChanges.isEmpty() && !itemChanges.isEmpty()) {
+		if (recipeChanges.isEmpty() && (!itemChanges.isEmpty() || (itemChanges.size() == 1 && itemChanges.get(FIFYDataComponentTypes.RECIPE_REMAINDER).isPresent()))) {
 			result = false;
 		} else {
 			result = itemChanges.entrySet().containsAll(recipeChanges.entrySet());

@@ -1,10 +1,12 @@
 package net.crioch.fifymcc;
 
-import net.crioch.fifymcc.components.FIFYDataComponentTypes;
+import net.crioch.fifymcc.component.FIFYDataComponentTypes;
+import net.crioch.fifymcc.component.RecipeRemainder;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.item.v1.DefaultItemComponentEvents;
 import net.minecraft.block.entity.AbstractFurnaceBlockEntity;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
 
 import java.util.Iterator;
@@ -27,6 +29,11 @@ public class FIFYMCustomCraftingMod implements ModInitializer {
                 int fuelValue = fuelValues.getOrDefault(item, 0);
                 if (fuelValue > 0) {
                     context.modify(item, components -> components.add(FIFYDataComponentTypes.FUEL_VALUE, fuelValue));
+                }
+                
+                if (item.hasRecipeRemainder()) {
+                    Item remainder = item.getRecipeRemainder();
+                    context.modify(item, components -> components.add(FIFYDataComponentTypes.RECIPE_REMAINDER, new RecipeRemainder(new ItemStack(remainder))));
                 }
             }
         });
