@@ -1,7 +1,9 @@
 package net.crioch.fifymcc;
 
 import net.crioch.fifymcc.component.FIFYDataComponentTypes;
-import net.crioch.fifymcc.component.RecipeRemainder;
+import net.crioch.fifymcc.component.remainder.RemainderTypes;
+import net.crioch.fifymcc.component.remainder.StackRemainder;
+import net.crioch.fifymcc.registry.FIFYMRegistries;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.item.v1.DefaultItemComponentEvents;
 import net.minecraft.block.entity.AbstractFurnaceBlockEntity;
@@ -15,6 +17,7 @@ import java.util.Map;
 public class FIFYMCustomCraftingMod implements ModInitializer {
     @Override
     public void onInitialize() {
+        RemainderTypes.register();
         FIFYDataComponentTypes.register();
 
         DefaultItemComponentEvents.MODIFY.register((context) -> {
@@ -33,7 +36,7 @@ public class FIFYMCustomCraftingMod implements ModInitializer {
                 
                 if (item.hasRecipeRemainder()) {
                     Item remainder = item.getRecipeRemainder();
-                    context.modify(item, components -> components.add(FIFYDataComponentTypes.RECIPE_REMAINDER, new RecipeRemainder(new ItemStack(remainder))));
+                    context.modify(item, components -> components.add(FIFYDataComponentTypes.RECIPE_REMAINDER, new StackRemainder(new ItemStack(remainder))));
                 }
             }
         });
