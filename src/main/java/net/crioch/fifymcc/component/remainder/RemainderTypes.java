@@ -10,11 +10,14 @@ public class RemainderTypes {
     public static Remainder.Type BREAKABLE;
     public static Remainder.Type DAMAGEABLE;
     public static Remainder.Type ITEM_STACK;
+    public static Remainder.Type NON_CONSUMABLE;
+
 
     public static void register() {
         BREAKABLE = register(BreakableRemainder.ID, BreakableRemainder.CODEC);
         DAMAGEABLE = register(DamageableRemainder.ID, DamageableRemainder.CODEC);
         ITEM_STACK = register(StackRemainder.ID, StackRemainder.CODEC);
+        NON_CONSUMABLE = register(NonConsumableRemainder.ID, NonConsumableRemainder.CODEC);
     }
 
     public static Remainder.Type register(Identifier id, MapCodec<? extends Remainder> codec) {

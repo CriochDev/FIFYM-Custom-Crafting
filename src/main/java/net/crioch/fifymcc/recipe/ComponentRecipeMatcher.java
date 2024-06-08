@@ -32,7 +32,7 @@ public class ComponentRecipeMatcher {
      * <p>This is equivalent to calling {@code addInput(remainder, Item.DEFAULT_MAX_COUNT)}.
      */
     public void addUnenchantedInput(ItemStack stack) {
-        if (!(stack.isDamaged() || stack.hasEnchantments() || stack.contains(DataComponentTypes.CUSTOM_NAME))) {
+        if (!(stack.hasEnchantments() || stack.contains(DataComponentTypes.CUSTOM_NAME))) {
             this.addInput(stack);
         }
     }
