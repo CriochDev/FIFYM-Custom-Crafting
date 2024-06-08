@@ -1,6 +1,7 @@
 package net.crioch.fifymcc;
 
 import net.crioch.fifymcc.component.FIFYDataComponentTypes;
+import net.crioch.fifymcc.component.FuelValueComponent;
 import net.crioch.fifymcc.component.remainder.RemainderTypes;
 import net.crioch.fifymcc.component.remainder.StackRemainder;
 import net.crioch.fifymcc.registry.FIFYMRegistries;
@@ -31,7 +32,7 @@ public class FIFYMCustomCraftingMod implements ModInitializer {
 
                 int fuelValue = fuelValues.getOrDefault(item, 0);
                 if (fuelValue > 0) {
-                    context.modify(item, components -> components.add(FIFYDataComponentTypes.FUEL_VALUE, fuelValue));
+                    context.modify(item, components -> components.add(FIFYDataComponentTypes.FUEL_VALUE, new FuelValueComponent(fuelValue)));
                 }
                 
                 if (item.hasRecipeRemainder()) {

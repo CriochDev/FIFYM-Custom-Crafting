@@ -8,6 +8,7 @@
     "enchantment.EnchantmentHelperMixin",
     "entity.PlayerInventoryMixin",
     "inventory.CraftingInventoryMixin",
+    "inventory.PlayerInventoryMixin",
     "inventory.SimpleInventoryMixin",
     "recipe.Ingredient$StackEntryMixin",
     "recipe.Ingredient$TagEntryMixin",
@@ -17,7 +18,9 @@
     "recipe.ShapelessRecipeMixin",
     "screenhandler.AbstractFurnaceScreenHandlerMixin",
     "screenhandler.CraftingScreenHandlerMixin",
-    "screenhandler.PlayerScreenHandlerMixin"
+    "screenhandler.PlayerScreenHandlerMixin",
+    "util.math.random.CheckedRandomMixin",
+    "util.math.random.RandomMixin"
   ],
   "injectors": {
     "defaultRequire": 1

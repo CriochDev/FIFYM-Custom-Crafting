@@ -19,7 +19,8 @@ public class DamageableRemainder extends RemainderWithSeed {
     public static final MapCodec<DamageableRemainder> CODEC = RecordCodecBuilder.mapCodec(
             instance -> instance.group(
                     Codecs.POSITIVE_INT.optionalFieldOf("damage", 1).forGetter(DamageableRemainder::damage),
-                    Codec.LONG.optionalFieldOf("seed", 0L).forGetter(DamageableRemainder::getSeed)
+                    Codec.LONG.optionalFieldOf("seed", 0L).forGetter(DamageableRemainder::getSeed),
+                    Codec.BOOL.optionalFieldOf("can_break", true).forGetter(DamageableRemainder::canBreak)
             ).apply(instance, DamageableRemainder::new)
     );
 
@@ -28,9 +29,15 @@ public class DamageableRemainder extends RemainderWithSeed {
         return this.damage;
     }
 
-    public DamageableRemainder(int damage, long seed) {
+    private final boolean canBreak;
+    public boolean canBreak() {
+        return this.canBreak;
+    }
+
+    public DamageableRemainder(int damage, long seed, boolean canBreak) {
         super(RemainderTypes.DAMAGEABLE, seed);
         this.damage = damage;
+        this.canBreak = canBreak;
     }
 
     @Override
@@ -54,9 +61,13 @@ public class DamageableRemainder extends RemainderWithSeed {
                 remainder.setDamage(damage);
             }
 
-            if (damage > remainder.getMaxDamage()) {
-                remainder.setDamage(0);
-                remainder.decrement(1);
+            if (damage >= remainder.getMaxDamage()) {
+                if (this.canBreak) {
+                    remainder.setDamage(0);
+                    remainder.decrement(1);
+                } else {
+                    remainder.setDamage(remainder.getMaxDamage());
+                }
             }
         } else if (stack.contains(DataComponentTypes.UNBREAKABLE)) {
             remainder = stack.copy();
