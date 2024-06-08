@@ -1,6 +1,7 @@
 package net.crioch.fifymcc.mixin.recipe;
 
 import net.crioch.fifymcc.component.FIFYDataComponentTypes;
+import net.crioch.fifymcc.component.remainder.Remainder;
 import net.minecraft.component.ComponentChanges;
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.Ingredient;
@@ -12,6 +13,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import com.llamalad7.mixinextras.sugar.Local;
 
+import java.util.Optional;
+
 @Mixin(Ingredient.class)
 public class IngredientMixin {
 	@Inject(method = "test(Lnet/minecraft/item/ItemStack;)Z", at = @At(value = "RETURN", ordinal = 2), cancellable = true)
@@ -19,7 +22,8 @@ public class IngredientMixin {
 		ComponentChanges recipeChanges = recipeStack.getComponentChanges();
 		ComponentChanges itemChanges = itemStack.getComponentChanges();
 		boolean result;
-		if (recipeChanges.isEmpty() && (!itemChanges.isEmpty() || (itemChanges.size() == 1 && itemChanges.get(FIFYDataComponentTypes.RECIPE_REMAINDER).isPresent()))) {
+		Optional<? extends Remainder> remainder = itemChanges.get(FIFYDataComponentTypes.RECIPE_REMAINDER);
+		if (recipeChanges.isEmpty() && !itemChanges.isEmpty() && !(itemChanges.size() == 1 && remainder != null && remainder.isPresent())) {
 			result = false;
 		} else {
 			result = itemChanges.entrySet().containsAll(recipeChanges.entrySet());

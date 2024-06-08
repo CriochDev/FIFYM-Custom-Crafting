@@ -13,12 +13,13 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.dynamic.Codecs;
 
-public class DamageableRemainder extends Remainder {
+public class DamageableRemainder extends RemainderWithSeed {
     public static final Identifier ID = new Identifier(Util.MOD_ID, "damageable_remainder");
 
     public static final MapCodec<DamageableRemainder> CODEC = RecordCodecBuilder.mapCodec(
             instance -> instance.group(
-                    Codecs.POSITIVE_INT.optionalFieldOf("damage", 1).forGetter(DamageableRemainder::damage)
+                    Codecs.POSITIVE_INT.optionalFieldOf("damage", 1).forGetter(DamageableRemainder::damage),
+                    Codec.LONG.optionalFieldOf("seed", 0L).forGetter(DamageableRemainder::getSeed)
             ).apply(instance, DamageableRemainder::new)
     );
 
@@ -27,8 +28,8 @@ public class DamageableRemainder extends Remainder {
         return this.damage;
     }
 
-    public DamageableRemainder(int damage) {
-        super(RemainderTypes.DAMAGEABLE);
+    public DamageableRemainder(int damage, long seed) {
+        super(RemainderTypes.DAMAGEABLE, seed);
         this.damage = damage;
     }
 
