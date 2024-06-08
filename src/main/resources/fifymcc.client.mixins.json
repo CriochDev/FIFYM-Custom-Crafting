@@ -1,16 +1,14 @@
 {
   "required": true,
-  "package": "net.crioch.fifymcc.mixin",
+  "package": "net.crioch.fifymcc.mixin.client",
   "compatibilityLevel": "JAVA_21",
   "client": [],
   "injectors": {
     "defaultRequire": 1
   },
   "mixins": [
-    "client.RecipeBookWidgetMixin",
-    "client.RecipeResultCollectionMixin",
-    "inventory.PlayerInventoryMixin",
-    "util.math.random.CheckedRandomMixin",
-    "util.math.random.RandomMixin"
+    "RecipeBookWidgetMixin",
+    "RecipeResultCollectionMixin",
+    "ItemStackMixin"
   ]
 }

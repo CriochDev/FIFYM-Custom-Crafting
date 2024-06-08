@@ -29,7 +29,7 @@ public class Ingredient$TagEntryMixin  {
 
     @Redirect(method = "getStacks", at = @At(value = "INVOKE", target = "Ljava/util/List;add(Ljava/lang/Object;)Z"))
     private <E> boolean createItemStackWithComponentChanges(List<ItemStack> instance, E e, @Local RegistryEntry<Item> entry) {
-        return instance.add(new ItemStack(entry, 1, this.changes));
+        return instance.add(new ItemStack(entry, 1, this.changes != null ? this.changes : ComponentChanges.EMPTY));
     }
 
     @ModifyArg(method = "<clinit>",
