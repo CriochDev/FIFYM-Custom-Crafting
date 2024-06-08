@@ -8,8 +8,7 @@ import com.google.common.collect.Lists;
 import java.util.*;
 
 import it.unimi.dsi.fastutil.ints.*;
-import net.minecraft.component.ComponentChanges;
-import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.*;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.Ingredient;
@@ -17,7 +16,6 @@ import net.minecraft.recipe.Recipe;
 import net.minecraft.recipe.RecipeEntry;
 import net.minecraft.registry.Registries;
 import net.minecraft.util.Pair;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -25,8 +23,8 @@ import org.jetbrains.annotations.Nullable;
  * This specifically does not check patterns (See {@link net.minecraft.recipe.ShapedRecipe} for that).
  */
 public class ComponentRecipeMatcher {
-    private final Map<Integer, Map<ComponentChanges, Integer>> inputs = new HashMap<>();
-    private static final Map<ComponentChanges, Integer> EMPTY = new HashMap<>();
+    private final Map<Integer, Map<Integer, Pair<Map<Integer, Integer>, Set<ComponentChanges>>>> inputs = new Int2ObjectArrayMap<>();
+    private static final Map<Integer, ComponentChanges> EMPTY = new Int2ObjectArrayMap<>();
 
     /**
      * Adds a full item remainder to the pool of available resources.
@@ -53,32 +51,58 @@ public class ComponentRecipeMatcher {
      */
     public void addInput(ItemStack stack, int maxCount) {
         if (!stack.isEmpty()) {
+            ComponentChanges original = stack.getComponentChanges();
+
             RecipeKey key = ComponentRecipeMatcher.getKey(stack);
-            Map<ComponentChanges, Integer> potentials = this.inputs.computeIfAbsent(key.getLeft(), k -> new HashMap<>());
-            int count = potentials.getOrDefault(key.getRight(), 0) + Math.min(stack.getCount(), maxCount);
-            potentials.put(key.getRight(), count);
+            Map<Integer, Pair<Map<Integer, Integer>, Set<ComponentChanges>>> potentials = this.inputs.computeIfAbsent(key.itemId(), k -> new Int2ObjectArrayMap<>());
+            Pair<Map<Integer, Integer>, Set<ComponentChanges>> subpotentials = potentials.computeIfAbsent(key.componentHash(), k -> new Pair<>(new Int2IntOpenHashMap(), new HashSet<>()));
+            subpotentials.getRight().add(original);
+            int count = subpotentials.getLeft().getOrDefault(key.originalComponentHash(), 0)  + Math.min(stack.getCount(), maxCount);
+            subpotentials.getLeft().put(key.originalComponentHash(), count);
         }
     }
 
     void addInput(RecipeKey key, int count) {
-        Map<ComponentChanges, Integer> potentials = this.inputs.get(key.getLeft());
-        potentials.put(key.getRight(), potentials.get(key.getRight()) + count);
+        Map<Integer, Pair<Map<Integer, Integer>, Set<ComponentChanges>>> potentials = this.inputs.get(key.itemId());
+        Pair<Map<Integer, Integer>, Set<ComponentChanges>> subpotentials = potentials.get(key.componentHash());
+        subpotentials.getLeft().put(key.originalComponentHash(), subpotentials.getLeft().get(key.originalComponentHash()) + count);
     }
 
     public static RecipeKey getKey(ItemStack stack) {
-        ComponentChanges componentChanges = FIFYMRecipeMatcherHelper.removeIgnoredChanges(stack.getComponentChanges());
-        return new RecipeKey(ComponentRecipeMatcher.getItemId(stack), componentChanges);
+        ComponentChanges componentChanges = stack.getComponentChanges();
+        int originalStackHash = componentChanges.hashCode();
+        componentChanges = FIFYMRecipeMatcherHelper.removeIgnoredChanges(stack.getComponentChanges());
+        return new RecipeKey(ComponentRecipeMatcher.getItemId(stack), componentChanges.hashCode(), originalStackHash);
+    }
+
+    public List<RecipeKey> getKeys(Ingredient ingredient) {
+        return Arrays.stream(ingredient.getMatchingStacks()).map(stack -> {
+            int itemId = getItemId(stack);
+            Map<Integer, Pair<Map<Integer, Integer>, Set<ComponentChanges>>> potentials = this.inputs.get(getItemId(stack));
+            if (potentials == null) return null;
+
+            ComponentChanges stackChanges = stack.getComponentChanges();
+            int stackChangesHash = stackChanges.hashCode();
+            Pair<Map<Integer, Integer>, Set<ComponentChanges>> subpotentials = potentials.get(stackChangesHash);
+            if (subpotentials == null) return null;
+
+
+            Set<Map.Entry<DataComponentType<?>, Optional<?>>> ingredientChanges = stackChanges.entrySet();
+            ComponentChanges matching = null;
+            for (ComponentChanges changes: subpotentials.getRight()) {
+                if (changes.entrySet().containsAll(ingredientChanges)) {
+                    matching = changes;
+                    break;
+                }
+            }
+            if (matching == null) return null;
+
+            return new RecipeKey(itemId, stackChangesHash, matching.hashCode());
+        }).filter(Objects::nonNull).toList();
     }
 
     public static int getItemId(ItemStack stack) {
         return Registries.ITEM.getRawId(stack.getItem());
-    }
-
-    /**
-     * Determines whether a raw item id is present in the pool of crafting resources.
-     */
-    boolean contains(Pair<Integer, ComponentChanges> key) {
-        return this.inputs.containsKey(key.getLeft()) && this.inputs.get(key.getLeft()).containsKey(key.getRight());
     }
 
     /**
@@ -87,13 +111,17 @@ public class ComponentRecipeMatcher {
      * @param key the raw id of the item being consumed
      * @param count the number of times that item must be consumed
      */
-    boolean consume(Pair<Integer, ComponentChanges> key, int count) {
-        Map<ComponentChanges, Integer> potentials = this.inputs.get((int)key.getLeft());
+    boolean consume(RecipeKey key, int count) {
+        Map<Integer, Pair<Map<Integer, Integer>, Set<ComponentChanges>>> potentials = this.inputs.get(key.itemId());
+        if (potentials == null) return false;
 
-        if (potentials != null) {
-            int available = potentials.getOrDefault(key.getRight(), 0);
+        Pair<Map<Integer, Integer>, Set<ComponentChanges>> subpotentials = potentials.get(key.componentHash());
+
+        if (subpotentials != null) {
+            Map<Integer, Integer> map = subpotentials.getLeft();
+            int available = map.getOrDefault(key.originalComponentHash(), 0);
             if (available >= count) {
-                potentials.put(key.getRight(), available - count);
+                map.put(key.originalComponentHash(), available - count);
                 return true;
             }
         }
@@ -141,14 +169,7 @@ public class ComponentRecipeMatcher {
      * @param output optional output list of item ids that were matched whilst evaluating the recipe conditions
      */
     public int countCrafts(RecipeEntry<?> recipe, int limit, @Nullable List<ItemStack> output) {
-        return new Matcher((Recipe<?>)recipe.value()).countCrafts(limit, output);
-    }
-
-    public static ItemStack getStackFromId(int itemId) {
-        if (itemId == 0) {
-            return ItemStack.EMPTY;
-        }
-        return new ItemStack(Item.byRawId(itemId));
+        return new Matcher(recipe.value()).countCrafts(limit, output);
     }
 
     public void clear() {
@@ -228,7 +249,9 @@ public class ComponentRecipeMatcher {
                                     RecipeKey key = this.requiredItems[m];
                                     ComponentRecipeMatcher.this.addInput(key, limit);
                                     if (bl2) {
-                                        output.add(new ItemStack(Item.byRawId(key.getLeft()).getRegistryEntry(), 1, key.getRight()));
+                                        ComponentChanges changes = this.getMatching(key);
+                                        output.add(new ItemStack(Item.byRawId(key.itemId()).getRegistryEntry(), 1, changes));
+
                                     }
                                 }
                             }
@@ -244,19 +267,10 @@ public class ComponentRecipeMatcher {
 
         private RecipeKey[] createItemRequirementList() {
             Set<RecipeKey> keyCollection = new TreeSet<>();
-            Iterator<Ingredient> var2 = this.ingredients.iterator();
 
-            while(var2.hasNext()) {
-                Ingredient ingredient = var2.next();
-                keyCollection.addAll(Arrays.stream(ingredient.getMatchingStacks()).map(stack -> new RecipeKey(ComponentRecipeMatcher.getItemId(stack), stack.getComponentChanges())).toList());
-            }
-
-            Iterator<RecipeKey> keyIterator = keyCollection.iterator();
-
-            while(keyIterator.hasNext()) {
-                if (!ComponentRecipeMatcher.this.contains(keyIterator.next())) {
-                    keyIterator.remove();
-                }
+            for (Ingredient ingredient : this.ingredients) {
+                List<RecipeKey> keys = ComponentRecipeMatcher.this.getKeys(ingredient);
+                keyCollection.addAll(keys);
             }
 
             return keyCollection.toArray( new RecipeKey[0]);
@@ -267,10 +281,12 @@ public class ComponentRecipeMatcher {
 
             for(int j = 0; j < i; ++j) {
                 RecipeKey key = this.requiredItems[j];
-                Map<ComponentChanges, Integer> potentials = ComponentRecipeMatcher.this.inputs.get(key.getLeft());
+                Map<Integer, Pair<Map<Integer, Integer>, Set<ComponentChanges>>> potentials = ComponentRecipeMatcher.this.inputs.get(key.itemId());
                 if (potentials == null) continue;
-                ComponentChanges matched = this.getMatching(potentials, key.getRight());
-                if (potentials.getOrDefault(matched, 0) >= multiplier) {
+                Pair<Map<Integer, Integer>, Set<ComponentChanges>> subpotentials = potentials.get(key.componentHash());
+                if (subpotentials == null) continue;
+                    int count = subpotentials.getLeft().getOrDefault(key.originalComponentHash(), 0);
+                if (count >= multiplier) {
                     this.addRequirement(false, j);
 
                     while(!this.ingredientItemLookup.isEmpty()) {
@@ -376,34 +392,28 @@ public class ComponentRecipeMatcher {
         }
 
         private int getMaximumCrafts() {
-            int i = Integer.MAX_VALUE;
+            int maxCraftable = Integer.MAX_VALUE;
 
             for (Ingredient ingredient : this.ingredients) {
-                int j = 0;
+                int ingredientMax = 0;
 
-                Iterator<ItemStack> iterator = Arrays.stream(ingredient.getMatchingStacks()).iterator();
-                while (iterator.hasNext()) {
-                    ItemStack k = iterator.next();
-                    Pair<Integer, ComponentChanges> key = ComponentRecipeMatcher.getKey(k);
-                    Map<ComponentChanges, Integer> potentials = ComponentRecipeMatcher.this.inputs.getOrDefault(key.getLeft(), ComponentRecipeMatcher.EMPTY);
-                    ComponentChanges matched = this.getMatching(potentials, key.getRight());
-                    j = Math.max(j, potentials.getOrDefault(matched, 0));
+                for(RecipeKey key : ComponentRecipeMatcher.this.getKeys(ingredient)) {
+                    int count = ComponentRecipeMatcher.this.inputs.get(key.itemId()).get(key.componentHash()).getLeft().get(key.originalComponentHash());
+                    ingredientMax = Math.max(ingredientMax, count);
                 }
 
-                if (i > 0) {
-                    i = Math.min(i, j);
+                if (maxCraftable > 0) {
+                    maxCraftable = Math.min(maxCraftable, ingredientMax);
                 }
             }
 
-            return i;
+            return maxCraftable;
         }
 
-        private ComponentChanges getMatching(@NotNull Map<ComponentChanges, Integer> potentials, ComponentChanges matcher) {
+        private ComponentChanges getMatching(RecipeKey key) {
             ComponentChanges matched = null;
-            for (ComponentChanges changes: potentials.keySet()) {
-                if (matcher.isEmpty() && !changes.isEmpty()) {
-
-                } else if (changes.entrySet().containsAll(matcher.entrySet())){
+            for (ComponentChanges changes : ComponentRecipeMatcher.this.inputs.get(key.itemId()).get(key.componentHash()).getRight()) {
+                if (changes.hashCode() == key.originalComponentHash()) {
                     matched = changes;
                     break;
                 }
