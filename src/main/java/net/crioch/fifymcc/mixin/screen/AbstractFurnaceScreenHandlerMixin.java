@@ -1,4 +1,4 @@
-package net.crioch.fifymcc.mixin.screenhandler;
+package net.crioch.fifymcc.mixin.screen;
 
 import net.crioch.fifymcc.recipe.ComponentRecipeMatcher;
 import net.crioch.fifymcc.interfaces.ComponentRecipeInputProvider;
