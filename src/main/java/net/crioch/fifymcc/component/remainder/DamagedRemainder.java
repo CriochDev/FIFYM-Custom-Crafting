@@ -3,7 +3,6 @@ package net.crioch.fifymcc.component.remainder;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.crioch.fifymcc.registry.FIFYMRegistries;
 import net.crioch.fifymcc.util.Util;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -13,15 +12,15 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.dynamic.Codecs;
 
-public class DamageableRemainder extends RemainderWithSeed {
-    public static final Identifier ID = new Identifier(Util.MOD_ID, "damageable_remainder");
+public class DamagedRemainder extends RemainderWithSeed {
+    public static final Identifier ID = new Identifier(Util.MOD_ID, "damaged_remainder");
 
-    public static final MapCodec<DamageableRemainder> CODEC = RecordCodecBuilder.mapCodec(
+    public static final MapCodec<DamagedRemainder> CODEC = RecordCodecBuilder.mapCodec(
             instance -> instance.group(
-                    Codecs.POSITIVE_INT.optionalFieldOf("damage", 1).forGetter(DamageableRemainder::damage),
-                    Codec.LONG.optionalFieldOf("seed", 0L).forGetter(DamageableRemainder::getSeed),
-                    Codec.BOOL.optionalFieldOf("can_break", true).forGetter(DamageableRemainder::canBreak)
-            ).apply(instance, DamageableRemainder::new)
+                    Codecs.POSITIVE_INT.optionalFieldOf("damage", 1).forGetter(DamagedRemainder::damage),
+                    Codec.LONG.optionalFieldOf("seed", 0L).forGetter(DamagedRemainder::getSeed),
+                    Codec.BOOL.optionalFieldOf("can_break", true).forGetter(DamagedRemainder::canBreak)
+            ).apply(instance, DamagedRemainder::new)
     );
 
     private final int damage;
@@ -34,7 +33,7 @@ public class DamageableRemainder extends RemainderWithSeed {
         return this.canBreak;
     }
 
-    public DamageableRemainder(int damage, long seed, boolean canBreak) {
+    public DamagedRemainder(int damage, long seed, boolean canBreak) {
         super(RemainderTypes.DAMAGEABLE, seed);
         this.damage = damage;
         this.canBreak = canBreak;

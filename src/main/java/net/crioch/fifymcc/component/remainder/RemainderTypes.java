@@ -1,6 +1,5 @@
 package net.crioch.fifymcc.component.remainder;
 
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import net.crioch.fifymcc.registry.FIFYMRegistries;
 import net.minecraft.registry.Registry;
@@ -14,10 +13,10 @@ public class RemainderTypes {
 
 
     public static void register() {
-        BREAKABLE = register(BreakableRemainder.ID, BreakableRemainder.CODEC);
-        DAMAGEABLE = register(DamageableRemainder.ID, DamageableRemainder.CODEC);
+        BREAKABLE = register(ChanceRemainder.ID, ChanceRemainder.CODEC);
+        DAMAGEABLE = register(DamagedRemainder.ID, DamagedRemainder.CODEC);
         ITEM_STACK = register(StackRemainder.ID, StackRemainder.CODEC);
-        NON_CONSUMABLE = register(NonConsumableRemainder.ID, NonConsumableRemainder.CODEC);
+        NON_CONSUMABLE = register(UnconsumedRemainder.ID, UnconsumedRemainder.CODEC);
     }
 
     public static Remainder.Type register(Identifier id, MapCodec<? extends Remainder> codec) {

@@ -7,16 +7,16 @@ import net.crioch.fifymcc.util.Util;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 
-public class NonConsumableRemainder extends Remainder {
+public class UnconsumedRemainder extends Remainder {
     public static final Identifier ID = new Identifier(Util.MOD_ID, "unconsumed_remainder");
 
-    public static MapCodec<NonConsumableRemainder> CODEC = RecordCodecBuilder.mapCodec(
+    public static MapCodec<UnconsumedRemainder> CODEC = RecordCodecBuilder.mapCodec(
             instance -> instance.group(
                     Codec.BYTE.optionalFieldOf("", (byte) 0).forGetter(remainder -> (byte)0)
-            ).apply(instance, value -> new NonConsumableRemainder())
+            ).apply(instance, value -> new UnconsumedRemainder())
     );
 
-    NonConsumableRemainder() {
+    UnconsumedRemainder() {
         super(RemainderTypes.NON_CONSUMABLE);
     }
 
