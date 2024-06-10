@@ -16,9 +16,12 @@
     "recipe.InputSlotFillerMixin",
     "recipe.RecipeMixin",
     "recipe.ShapelessRecipeMixin",
+    "recipe.SmithingTransformRecipeMixin",
     "screen.AbstractFurnaceScreenHandlerMixin",
     "screen.CraftingScreenHandlerMixin",
+    "screen.ForgingScreenHandlerMixin",
     "screen.PlayerScreenHandlerMixin",
+    "screen.SmithingScreenHandlerMixin",
     "util.math.random.CheckedRandomMixin",
     "util.math.random.RandomMixin"
   ],

@@ -1,7 +1,7 @@
 package net.crioch.fifymcc.mixin.enchantment;
 
 import com.llamalad7.mixinextras.sugar.Local;
-import net.crioch.fifymcc.component.FIFYDataComponentTypes;
+import net.crioch.fifymcc.component.FIFYMDataComponentTypes;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -25,6 +25,6 @@ public class EnchantmentHelperMixin {
 
     @Unique
     private static int getActualEnchantability(ItemStack stack) {
-        return stack.getComponents().getOrDefault(FIFYDataComponentTypes.ENCHANTABILITY, 0);
+        return stack.getComponents().getOrDefault(FIFYMDataComponentTypes.ENCHANTABILITY, 0);
     }
 }
