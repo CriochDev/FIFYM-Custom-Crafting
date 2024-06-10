@@ -23,6 +23,7 @@
     "screen.LoomScreenHandlerOutputSlotMixin",
     "screen.PlayerScreenHandlerMixin",
     "screen.SmithingScreenHandlerMixin",
+    "screen.StonecutterScreenOutputSlotMixin",
     "util.math.random.CheckedRandomMixin",
     "util.math.random.RandomMixin"
   ],
