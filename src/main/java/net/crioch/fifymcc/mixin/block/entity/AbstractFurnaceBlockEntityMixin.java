@@ -67,4 +67,15 @@ public class AbstractFurnaceBlockEntityMixin implements ComponentRecipeInputProv
     private static void disableDecrementOfFuel(ItemStack instance, int amount) {
         // Purposely do nothing
     }
+
+    @Redirect(method = "craftRecipe", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;decrement(I)V"))
+    private static void inputSlotUsesRemainderComponentOnComsume(ItemStack stack, int amount, @Local(argsOnly = true) DefaultedList<ItemStack> slots) {
+        Remainder remainder = stack.get(FIFYMDataComponentTypes.RECIPE_REMAINDER);
+
+        if (remainder != null) {
+            slots.set(0, remainder.getRemainder(stack));
+        } else {
+            stack.decrement(amount);
+        }
+    }
 }
