@@ -1,6 +1,6 @@
 package net.crioch.fifymcc.mixin.recipe;
 
-import net.crioch.fifymcc.component.FIFYDataComponentTypes;
+import net.crioch.fifymcc.component.FIFYMDataComponentTypes;
 import net.minecraft.component.ComponentMap;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
@@ -21,8 +21,8 @@ public interface RecipeMixin<C extends Inventory> {
         for(int i = 0; i < defaultedList.size(); ++i) {
             ItemStack stack = inventory.getStack(i);
             ComponentMap components = stack.getComponents();
-            if (components.contains(FIFYDataComponentTypes.RECIPE_REMAINDER)) {
-                defaultedList.set(i, components.get(FIFYDataComponentTypes.RECIPE_REMAINDER).getRemainder(stack));
+            if (components.contains(FIFYMDataComponentTypes.RECIPE_REMAINDER)) {
+                defaultedList.set(i, components.get(FIFYMDataComponentTypes.RECIPE_REMAINDER).getRemainder(stack));
             }
         }
 
