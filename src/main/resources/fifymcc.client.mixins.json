@@ -8,7 +8,6 @@
   },
   "mixins": [
     "RecipeBookWidgetMixin",
-    "RecipeResultCollectionMixin",
-    "ItemStackMixin"
+    "RecipeResultCollectionMixin"
   ]
 }
