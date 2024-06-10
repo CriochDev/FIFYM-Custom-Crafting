@@ -12,14 +12,27 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 @Mixin(SmithingTransformRecipe.class)
 public class SmithingTransformRecipeMixin {
 
-    @ModifyReturnValue(method = "matches", at = @At("RETURN"))
-    private boolean checkReturnValues(boolean original) {
-        return original;
+    @Redirect(method = "matches", at = @At(value = "INVOKE", target = "Lnet/minecraft/recipe/Ingredient;test(Lnet/minecraft/item/ItemStack;)Z"))
+    private boolean useEnchantlessTestingWithinMatches(Ingredient instance, ItemStack itemStack) {
+        return testFiltered(instance, itemStack);
     }
-    @Redirect(method = "/(^test.+)|matches/", at = @At(value = "INVOKE", target = "Lnet/minecraft/recipe/Ingredient;test(Lnet/minecraft/item/ItemStack;)Z"))
-    private boolean useEnchantlessTesting(Ingredient instance, ItemStack itemStack) {
-        instance.getMatchingStacks();
-        boolean result = ((IngredientAdditionalMethods)(Object)instance).fIFYM_CustomCrafting$testWithFilteredComponents(itemStack);
-        return result;
+
+    @Redirect(method = "testTemplate", at = @At(value = "INVOKE", target = "Lnet/minecraft/recipe/Ingredient;test(Lnet/minecraft/item/ItemStack;)Z"))
+    private boolean useEnchantlessTestingForTemplateIngredient(Ingredient instance, ItemStack itemStack) {
+        return testFiltered(instance, itemStack);
+    }
+
+    @Redirect(method = "testAddition", at = @At(value = "INVOKE", target = "Lnet/minecraft/recipe/Ingredient;test(Lnet/minecraft/item/ItemStack;)Z"))
+    private boolean useEnchantlessTestingForAdditionIngredient(Ingredient instance, ItemStack itemStack) {
+        return testFiltered(instance, itemStack);
+    }
+
+    @Redirect(method = "testBase", at = @At(value = "INVOKE", target = "Lnet/minecraft/recipe/Ingredient;test(Lnet/minecraft/item/ItemStack;)Z"))
+    private boolean useEnchantlessTestingForBaseIngredient(Ingredient instance, ItemStack itemStack) {
+        return testFiltered(instance, itemStack);
+    }
+
+    private static boolean testFiltered(Ingredient ingredient, ItemStack stack) {
+        return ((IngredientAdditionalMethods)(Object)ingredient).fIFYM_CustomCrafting$testWithFilteredComponents(stack);
     }
 }
