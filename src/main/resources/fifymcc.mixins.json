@@ -20,6 +20,7 @@
     "screen.AbstractFurnaceScreenHandlerMixin",
     "screen.CraftingScreenHandlerMixin",
     "screen.ForgingScreenHandlerMixin",
+    "screen.LoomScreenHandlerOutputSlotMixin",
     "screen.PlayerScreenHandlerMixin",
     "screen.SmithingScreenHandlerMixin",
     "util.math.random.CheckedRandomMixin",
