@@ -23,7 +23,7 @@ public class IngredientMixin implements IngredientAdditionalMethods {
 	@Inject(method = "test(Lnet/minecraft/item/ItemStack;)Z", at = @At(value = "RETURN", ordinal = 2), cancellable = true)
 	private void test(CallbackInfoReturnable<Boolean> info, @Local(ordinal = 0, argsOnly = true)ItemStack itemStack, @Local(ordinal = 1) ItemStack recipeStack) {
 		ComponentChanges recipeChanges = recipeStack.getComponentChanges();
-		ComponentChanges itemChanges = itemStack.getComponentChanges();
+		ComponentChanges itemChanges = FIFYMRecipeMatcherHelper.removeIgnoredChanges(itemStack);
 		boolean result;
 		Optional<? extends Remainder> remainder = itemChanges.get(FIFYMDataComponentTypes.RECIPE_REMAINDER);
 		if (recipeChanges.isEmpty() && !itemChanges.isEmpty() && !(itemChanges.size() == 1 && remainder != null && remainder.isPresent())) {
