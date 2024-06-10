@@ -15,13 +15,12 @@ import java.util.function.UnaryOperator;
 
 public class FIFYMDataComponentTypes {
     public static DataComponentType<Integer> ENCHANTABILITY;
-    public static DataComponentType<FuelValueComponent> FUEL_VALUE;
+    public static DataComponentType<Integer> FUEL_VALUE;
     public static DataComponentType<Remainder> RECIPE_REMAINDER;
 
     public static void register() {
         ENCHANTABILITY = FIFYMDataComponentTypes.register("enchantability", builder -> builder.codec(Codecs.NONNEGATIVE_INT).packetCodec(PacketCodecs.VAR_INT));
-        FUEL_VALUE = FIFYMDataComponentTypes.register("fuel_value", builder -> builder.codec(FuelValueComponent.CODEC).packetCodec(FuelValueComponent.PACKET_CODEC));
-        // HERE
+        FUEL_VALUE = FIFYMDataComponentTypes.register("fuel_value", builder -> builder.codec(Codecs.POSITIVE_INT).packetCodec(PacketCodecs.VAR_INT));
         Codec<Remainder> remainderCodec = FIFYMRegistries.REMAINDER_TYPE_REGISTRY.getCodec().dispatch("type", Remainder::getType, Remainder.Type::codec);
         RECIPE_REMAINDER = FIFYMDataComponentTypes.register("recipe_remainder", builder -> builder.codec(remainderCodec));
     }

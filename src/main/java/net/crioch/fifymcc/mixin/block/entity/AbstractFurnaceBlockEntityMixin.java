@@ -2,7 +2,6 @@ package net.crioch.fifymcc.mixin.block.entity;
 
 import com.llamalad7.mixinextras.sugar.Local;
 import net.crioch.fifymcc.component.FIFYMDataComponentTypes;
-import net.crioch.fifymcc.component.FuelValueComponent;
 import net.crioch.fifymcc.component.remainder.Remainder;
 import net.crioch.fifymcc.recipe.ComponentRecipeMatcher;
 import net.crioch.fifymcc.interfaces.ComponentRecipeInputProvider;
