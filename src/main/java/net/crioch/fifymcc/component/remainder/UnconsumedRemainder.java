@@ -8,13 +8,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 
 public class UnconsumedRemainder extends Remainder {
-    public static final Identifier ID = new Identifier(Util.MOD_ID, "unconsumed_remainder");
+    public static final Identifier ID = new Identifier(Util.MOD_ID, "unconsumed");
 
-    public static MapCodec<UnconsumedRemainder> CODEC = RecordCodecBuilder.mapCodec(
-            instance -> instance.group(
-                    Codec.BYTE.optionalFieldOf("", (byte) 0).forGetter(remainder -> (byte)0)
-            ).apply(instance, value -> new UnconsumedRemainder())
-    );
+    public static MapCodec<UnconsumedRemainder> CODEC = MapCodec.unit(UnconsumedRemainder::new);
 
     UnconsumedRemainder() {
         super(RemainderTypes.NON_CONSUMABLE);
@@ -23,5 +19,10 @@ public class UnconsumedRemainder extends Remainder {
     @Override
     public ItemStack getRemainder(ItemStack stack) {
         return stack.copy();
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        return object instanceof UnconsumedRemainder;
     }
 }

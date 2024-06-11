@@ -13,7 +13,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.dynamic.Codecs;
 
 public class DamagedRemainder extends RemainderWithSeed {
-    public static final Identifier ID = new Identifier(Util.MOD_ID, "damaged_remainder");
+    public static final Identifier ID = new Identifier(Util.MOD_ID, "damaged");
 
     public static final MapCodec<DamagedRemainder> CODEC = RecordCodecBuilder.mapCodec(
             instance -> instance.group(

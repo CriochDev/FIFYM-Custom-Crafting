@@ -10,7 +10,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 
 public class ChanceRemainder extends RemainderWithSeed {
-    public static final Identifier ID = new Identifier(Util.MOD_ID, "chance_remainder");
+    public static final Identifier ID = new Identifier(Util.MOD_ID, "chance");
 
     public static final MapCodec<ChanceRemainder> CODEC = (RecordCodecBuilder.mapCodec(
             instance -> instance.group(

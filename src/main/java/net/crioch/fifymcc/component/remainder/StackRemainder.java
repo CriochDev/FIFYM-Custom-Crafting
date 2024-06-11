@@ -9,7 +9,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 
 public class StackRemainder extends Remainder {
-    public static final Identifier ID = new Identifier(Util.MOD_ID, "stack_remainder");
+    public static final Identifier ID = new Identifier(Util.MOD_ID, "item_stack");
     public static final MapCodec<StackRemainder> CODEC = RecordCodecBuilder.mapCodec(
             instance -> instance.group(
                     ItemStack.REGISTRY_ENTRY_CODEC.fieldOf("id").forGetter(StackRemainder::stack),
@@ -30,5 +30,10 @@ public class StackRemainder extends Remainder {
     @Override
     public ItemStack getRemainder(ItemStack stack) {
         return this.stack.copy();
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        return object instanceof StackRemainder && ItemStack.areItemsAndComponentsEqual(this.stack, ((StackRemainder)object).stack);
     }
 }
