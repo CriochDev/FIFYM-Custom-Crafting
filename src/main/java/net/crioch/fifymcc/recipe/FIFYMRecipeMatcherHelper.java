@@ -19,6 +19,7 @@ public class FIFYMRecipeMatcherHelper {
         addAllowedComponent(DataComponentTypes.CUSTOM_NAME);
         addAllowedComponent(DataComponentTypes.CUSTOM_MODEL_DATA);
         addAllowedComponent(DataComponentTypes.CUSTOM_DATA);
+        addAllowedComponent(DataComponentTypes.ITEM_NAME);
     }
 
     public static void addAllowedComponent(DataComponentType<?> type) {

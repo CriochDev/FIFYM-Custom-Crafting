@@ -33,8 +33,8 @@ public class AbstractFurnaceBlockEntityMixin implements ComponentRecipeInputProv
 
     @Inject(method = "getFuelTime", at = @At("HEAD"), cancellable = true)
     private void getFuelTime(ItemStack fuel, CallbackInfoReturnable<Integer> cir) {
-        FuelValueComponent fuelValue = fuel.get(FIFYMDataComponentTypes.FUEL_VALUE);
-        cir.setReturnValue(fuelValue != null ? fuelValue.fuelValue() : 0);
+        Integer fuelValue = fuel.get(FIFYMDataComponentTypes.FUEL_VALUE);
+        cir.setReturnValue(fuelValue != null ? fuelValue : 0);
     }
 
     @Inject(method = "canUseAsFuel", at = @At("HEAD"), cancellable = true)
