@@ -25,7 +25,16 @@ public class Ingredient$StackEntryMixin {
     private static Codec<Ingredient.StackEntry> CODEC;
 
     static {
-        CODEC = RecordCodecBuilder.create(instance -> instance.group((ItemStack.REGISTRY_ENTRY_CODEC.fieldOf("item")).forGetter(Ingredient.StackEntry::stack), ComponentChanges.CODEC.optionalFieldOf("components", ComponentChanges.EMPTY).forGetter(stack -> stack.stack().getComponentChanges())).apply(instance, (stack, changed) -> Ingredient$StackEntryMixin.init(new ItemStack(stack.getRegistryEntry(), 1, changed))));
+        CODEC = RecordCodecBuilder.create(instance ->
+                instance.group(
+                        ItemStack.REGISTRY_ENTRY_CODEC.fieldOf("item").forGetter(Ingredient.StackEntry::stack),
+                        ComponentChanges.CODEC.optionalFieldOf("components", ComponentChanges.EMPTY).forGetter(entry -> entry.stack().getComponentChanges())
+                ).apply(instance, Ingredient$StackEntryMixin::createStack)
+        );
+    }
+
+    private static Ingredient.StackEntry createStack(ItemStack stack, ComponentChanges changes) {
+        return init(new ItemStack(stack.getRegistryEntry(), 1, changes));
     }
 
     @Invoker("<init>")

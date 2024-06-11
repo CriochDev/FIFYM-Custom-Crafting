@@ -8,29 +8,34 @@ import net.minecraft.component.DataComponentTypes;
 import net.minecraft.item.ItemStack;
 
 import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Stream;
 
 public class FIFYMRecipeMatcherHelper {
-    private static final Set<DataComponentType<?>> ALLOWED_COMPONENTS;
+    private static final Set<DataComponentType<?>> BLACKLISTED_COMPONENTS;
 
     static {
-        ALLOWED_COMPONENTS = new HashSet<>();
+        BLACKLISTED_COMPONENTS = new HashSet<>();
 
-        addAllowedComponent(DataComponentTypes.CUSTOM_NAME);
-        addAllowedComponent(DataComponentTypes.CUSTOM_MODEL_DATA);
-        addAllowedComponent(DataComponentTypes.CUSTOM_DATA);
-        addAllowedComponent(DataComponentTypes.ITEM_NAME);
+        addBlacklistedComponent(FIFYMDataComponentTypes.RECIPE_REMAINDER);
+        addBlacklistedComponent(DataComponentTypes.UNBREAKABLE);
+        addBlacklistedComponent(DataComponentTypes.LORE);
+        addBlacklistedComponent(DataComponentTypes.CAN_PLACE_ON);
+        addBlacklistedComponent(DataComponentTypes.CAN_BREAK);
+        addBlacklistedComponent(DataComponentTypes.HIDE_ADDITIONAL_TOOLTIP);
+        addBlacklistedComponent(DataComponentTypes.HIDE_TOOLTIP);
+        addBlacklistedComponent(DataComponentTypes.DEBUG_STICK_STATE);
     }
 
-    public static void addAllowedComponent(DataComponentType<?> type) {
-        ALLOWED_COMPONENTS.add(type);
+    public static void addBlacklistedComponent(DataComponentType<?> type) { BLACKLISTED_COMPONENTS.add(type); }
+
+    public static ComponentChanges filterWithBlacklist(ItemStack stack) {
+        return filterWithBlacklist(stack, true);
     }
 
-    public static ComponentChanges removeIgnoredChanges(ItemStack stack) {
-        return removeIgnoredChanges(stack, true);
-    }
-
-    public static ComponentChanges removeIgnoredChanges(ItemStack stack, boolean allowEnchantments) {
+    public static ComponentChanges filterWithBlacklist(ItemStack stack, boolean allowEnchantments) {
         ComponentChanges changes = stack.getComponentChanges();
         boolean allowDamageComponent;
         if (stack.get(FIFYMDataComponentTypes.RECIPE_REMAINDER) instanceof DamagedRemainder remainder) {
@@ -38,10 +43,11 @@ public class FIFYMRecipeMatcherHelper {
         } else {
             allowDamageComponent = false;
         }
+
         return changes.withRemovedIf(dataComponentType ->
-                !ALLOWED_COMPONENTS.contains(dataComponentType)
-                        && (dataComponentType != DataComponentTypes.DAMAGE || !allowDamageComponent)
-                        && (dataComponentType != DataComponentTypes.ENCHANTMENTS || !allowEnchantments)
+                BLACKLISTED_COMPONENTS.contains(dataComponentType)
+                        || (dataComponentType == DataComponentTypes.DAMAGE && !allowDamageComponent)
+                        || (dataComponentType == DataComponentTypes.ENCHANTMENTS && !allowEnchantments)
         );
     }
 }
