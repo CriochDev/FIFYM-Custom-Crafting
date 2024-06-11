@@ -74,4 +74,9 @@ public class DamagedRemainder extends RemainderWithSeed {
 
         return remainder;
     }
+
+    @Override
+    public boolean equals(Object object) {
+        return object instanceof DamagedRemainder && ((DamagedRemainder)object).damage == this.damage && ((DamagedRemainder)object).canBreak == this.canBreak;
+    }
 }
