@@ -34,7 +34,7 @@ public class ChanceRemainder extends RemainderWithSeed {
         if (!remainder.contains(DataComponentTypes.UNBREAKABLE)) {
             float value = this.random.nextFloat();
             if (this.chance > value)
-                remainder = super.getRemainder(stack);
+                remainder.decrement(1);
         }
         return remainder;
     }
