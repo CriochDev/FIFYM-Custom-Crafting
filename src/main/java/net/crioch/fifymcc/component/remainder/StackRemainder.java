@@ -1,10 +1,8 @@
 package net.crioch.fifymcc.component.remainder;
 
 
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.crioch.fifymcc.registry.FIFYMRegistries;
 import net.crioch.fifymcc.util.Util;
 import net.minecraft.component.ComponentChanges;
 import net.minecraft.item.ItemStack;

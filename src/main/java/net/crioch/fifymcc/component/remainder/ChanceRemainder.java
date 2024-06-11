@@ -38,4 +38,9 @@ public class ChanceRemainder extends RemainderWithSeed {
         }
         return remainder;
     }
+
+    @Override
+    public boolean equals(Object object) {
+        return object instanceof ChanceRemainder && ((ChanceRemainder)object).chance == this.chance;
+    }
 }
