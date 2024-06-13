@@ -21,6 +21,7 @@
     "recipe.RepairItemRecipeMixin",
     "recipe.ShapelessRecipeMixin",
     "recipe.SmithingTransformRecipeMixin",
+    "recipe.input.CraftingRecipeInputMixin",
     "screen.AbstractFurnaceScreenHandlerMixin",
     "screen.BrewingStandScreenHandlerFuelSlotMixin",
     "screen.CraftingScreenHandlerMixin",

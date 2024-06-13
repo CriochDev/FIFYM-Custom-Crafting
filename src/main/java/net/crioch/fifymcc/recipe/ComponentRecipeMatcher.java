@@ -87,7 +87,7 @@ public class ComponentRecipeMatcher {
             if (subpotentials == null) return null;
 
 
-            Set<Map.Entry<DataComponentType<?>, Optional<?>>> ingredientChanges = stackChanges.entrySet();
+            Set<Map.Entry<ComponentType<?>, Optional<?>>> ingredientChanges = stackChanges.entrySet();
             ComponentChanges matching = null;
             for (ComponentChanges changes: subpotentials.getRight()) {
                 if (changes.entrySet().containsAll(ingredientChanges)) {

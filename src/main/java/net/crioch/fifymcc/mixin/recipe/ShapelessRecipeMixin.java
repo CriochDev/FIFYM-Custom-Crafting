@@ -1,41 +1,20 @@
 package net.crioch.fifymcc.mixin.recipe;
 
-import net.crioch.fifymcc.recipe.ComponentRecipeMatcher;
-import net.minecraft.inventory.RecipeInputInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.recipe.Ingredient;
+import com.llamalad7.mixinextras.sugar.Local;
+import it.unimi.dsi.fastutil.ints.IntList;
+import net.crioch.fifymcc.interfaces.ComponentCraftingRecipeInput;
+import net.minecraft.recipe.Recipe;
+import net.minecraft.recipe.RecipeMatcher;
 import net.minecraft.recipe.ShapelessRecipe;
-import net.minecraft.util.collection.DefaultedList;
-import net.minecraft.world.World;
+import net.minecraft.recipe.input.CraftingRecipeInput;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(ShapelessRecipe.class)
 public  class ShapelessRecipeMixin {
-
-    @Unique
-    ShapelessRecipe recipe = (ShapelessRecipe)((Object)this);
-
-    @Final
-    @Shadow
-    DefaultedList<Ingredient> ingredients;
-
-    @Inject(method = "matches(Lnet/minecraft/inventory/RecipeInputInventory;Lnet/minecraft/world/World;)Z", at = @At("HEAD"), cancellable = true)
-    private void matches(RecipeInputInventory recipeInputInventory, World world, CallbackInfoReturnable<Boolean> cir) {
-        ComponentRecipeMatcher recipeMatcher = new ComponentRecipeMatcher();
-        int i = 0;
-
-        for(int j = 0; j < recipeInputInventory.size(); ++j) {
-            ItemStack itemStack = recipeInputInventory.getStack(j);
-            if (!itemStack.isEmpty()) {
-                ++i;
-                recipeMatcher.addInput(itemStack, 1);
-            }
-        }
-        boolean correctSize = i == this.ingredients.size();
-        boolean matches = recipeMatcher.match(this.recipe, null);
-        cir.setReturnValue(correctSize && matches);
+    @Redirect(method = "matches(Lnet/minecraft/recipe/input/CraftingRecipeInput;Lnet/minecraft/world/World;)Z", at = @At(value = "INVOKE", target = "Lnet/minecraft/recipe/RecipeMatcher;match(Lnet/minecraft/recipe/Recipe;Lit/unimi/dsi/fastutil/ints/IntList;)Z"))
+    private boolean matches(RecipeMatcher instance, Recipe<?> recipe, IntList output, @Local(argsOnly = true) CraftingRecipeInput crInput) {
+        return ((ComponentCraftingRecipeInput)(Object)crInput).fIFYM_CustomCrafting$getComponentRecipeMatcher().match(recipe, null);
     }
 }

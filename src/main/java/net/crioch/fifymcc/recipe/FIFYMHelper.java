@@ -4,7 +4,7 @@ import com.google.common.collect.Sets;
 import net.crioch.fifymcc.component.FIFYMDataComponentTypes;
 import net.crioch.fifymcc.component.remainder.DamagedRemainder;
 import net.minecraft.component.ComponentChanges;
-import net.minecraft.component.DataComponentType;
+import net.minecraft.component.ComponentType;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.item.ItemStack;
 
@@ -12,7 +12,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class FIFYMHelper {
-    private static final Set<DataComponentType<?>> BLACKLISTED_COMPONENTS;
+    private static final Set<ComponentType<?>> BLACKLISTED_COMPONENTS;
 
     static {
         BLACKLISTED_COMPONENTS = new HashSet<>();
@@ -27,7 +27,7 @@ public class FIFYMHelper {
         addBlacklistedComponent(DataComponentTypes.DEBUG_STICK_STATE);
     }
 
-    public static void addBlacklistedComponent(DataComponentType<?> type) { BLACKLISTED_COMPONENTS.add(type); }
+    public static void addBlacklistedComponent(ComponentType<?> type) { BLACKLISTED_COMPONENTS.add(type); }
 
     public static ComponentChanges filterWithBlacklist(ItemStack stack) {
         return filterWithBlacklist(stack, true);
@@ -42,10 +42,10 @@ public class FIFYMHelper {
             allowDamageComponent = false;
         }
 
-        return changes.withRemovedIf(dataComponentType ->
-                BLACKLISTED_COMPONENTS.contains(dataComponentType)
-                        || (dataComponentType == DataComponentTypes.DAMAGE && !allowDamageComponent)
-                        || (dataComponentType == DataComponentTypes.ENCHANTMENTS && !allowEnchantments)
+        return changes.withRemovedIf(ComponentType ->
+                BLACKLISTED_COMPONENTS.contains(ComponentType)
+                        || (ComponentType == DataComponentTypes.DAMAGE && !allowDamageComponent)
+                        || (ComponentType == DataComponentTypes.ENCHANTMENTS && !allowEnchantments)
         );
     }
 

@@ -8,9 +8,10 @@ import net.crioch.fifymcc.util.Util;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
+import net.minecraft.world.World;
 
 public class ChanceRemainder extends RemainderWithSeed {
-    public static final Identifier ID = new Identifier(Util.MOD_ID, "chance");
+    public static final Identifier ID = Identifier.of(Util.MOD_ID, "chance");
 
     public static final MapCodec<ChanceRemainder> CODEC = (RecordCodecBuilder.mapCodec(
             instance -> instance.group(
@@ -29,7 +30,7 @@ public class ChanceRemainder extends RemainderWithSeed {
     }
 
     @Override
-    public ItemStack getRemainder(ItemStack stack) {
+    public ItemStack getRemainder(ItemStack stack, World world) {
         ItemStack remainder = stack.copy();
         if (!remainder.contains(DataComponentTypes.UNBREAKABLE)) {
             float value = this.random.nextFloat();

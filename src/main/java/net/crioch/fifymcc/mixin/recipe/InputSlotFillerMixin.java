@@ -27,7 +27,7 @@ import java.util.List;
 @Mixin(InputSlotFiller.class)
 public abstract class InputSlotFillerMixin implements ComponentInputSlotFiller, RecipeGridAligner<ItemStack> {
     @Shadow
-    protected AbstractRecipeScreenHandler<? extends Inventory> handler;
+    protected AbstractRecipeScreenHandler<?, ? extends Inventory> handler;
 
     @Shadow
     protected PlayerInventory inventory;
@@ -87,7 +87,7 @@ public abstract class InputSlotFillerMixin implements ComponentInputSlotFiller, 
             j = k;
             if (this.finder.match(recipe.value(), stackList, j)) {
                 this.returnInputs();
-                this.alignComponentRecipeToGrid(this.handler.getCraftingWidth(), this.handler.getCraftingHeight(), this.handler.getCraftingResultSlotIndex(), recipe, stackList.iterator(), j);
+                this.fIFYM_CustomCrafting$alignComponentRecipeToGrid(this.handler.getCraftingWidth(), this.handler.getCraftingHeight(), this.handler.getCraftingResultSlotIndex(), recipe, stackList.iterator(), j);
             }
         }
         ci.cancel();
@@ -110,24 +110,7 @@ public abstract class InputSlotFillerMixin implements ComponentInputSlotFiller, 
     protected void fillInputSlots(RecipeEntry<? extends Recipe<?>> recipe, boolean craftAll) {}
 
     @Override
-    public void acceptAlignedInput(Iterator<ItemStack> inputs, int slot, int amount, int gridX, int gridY) {
-        Slot slot2 = this.handler.getSlot(slot);
-        ItemStack itemStack = inputs.next();
-        if (!itemStack.isEmpty()) {
-            for (int i = 0; i < amount; ++i) {
-                this.fillInputSlot(slot2, itemStack);
-            }
-        }
-    }
-
-    @Shadow
-    protected void fillInputSlot(Slot slot2, ItemStack itemStack) {
-
-    }
-
-
-    @Override
-    public void alignComponentRecipeToGrid(int gridWidth, int gridHeight, int gridOutputSlot, RecipeEntry<?> recipe, Iterator<ItemStack> inputs, int amount) {
+    public void fIFYM_CustomCrafting$alignComponentRecipeToGrid(int gridWidth, int gridHeight, int gridOutputSlot, RecipeEntry<?> recipe, Iterator<ItemStack> inputs, int amount) {
         int i = gridWidth;
         int j = gridHeight;
         Recipe<?> recipe2 = recipe.value();
@@ -165,7 +148,7 @@ public abstract class InputSlotFillerMixin implements ComponentInputSlotFiller, 
                 }
 
                 if (bl2) {
-                    this.acceptAlignedInput(inputs, k, amount, l, n);
+                    this.acceptActualAlignedInput(inputs.next(), k, amount, n, l);
                 } else if (o == n) {
                     k += gridWidth - n;
                     break;
@@ -174,5 +157,28 @@ public abstract class InputSlotFillerMixin implements ComponentInputSlotFiller, 
                 ++k;
             }
         }
+
+    }
+
+    @Unique
+    public void acceptActualAlignedInput(ItemStack itemStack, int slotIdx, int amount, int gridX, int gridY) {
+        Slot slot = this.handler.getSlot(slotIdx);
+        if (!itemStack.isEmpty()) {
+            int remaining = amount;
+
+            do {
+                if (remaining <= 0) {
+                    return;
+                }
+
+                remaining = this.fillInputSlot(slot, itemStack, remaining);
+            } while(remaining != -1);
+
+        }
+    }
+
+    @Shadow
+    protected int fillInputSlot(Slot slot2, ItemStack itemStack, int remaining) {
+        return -1;
     }
 }

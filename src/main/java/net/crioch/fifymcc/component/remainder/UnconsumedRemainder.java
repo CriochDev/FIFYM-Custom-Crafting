@@ -6,9 +6,10 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.crioch.fifymcc.util.Util;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
+import net.minecraft.world.World;
 
 public class UnconsumedRemainder extends Remainder {
-    public static final Identifier ID = new Identifier(Util.MOD_ID, "unconsumed");
+    public static final Identifier ID = Identifier.of(Util.MOD_ID, "unconsumed");
 
     public static MapCodec<UnconsumedRemainder> CODEC = MapCodec.unit(UnconsumedRemainder::new);
 
@@ -17,7 +18,7 @@ public class UnconsumedRemainder extends Remainder {
     }
 
     @Override
-    public ItemStack getRemainder(ItemStack stack) {
+    public ItemStack getRemainder(ItemStack stack, World world) {
         return stack.copy();
     }
 

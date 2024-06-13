@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(AbstractFurnaceScreenHandler.class)
-public class AbstractFurnaceScreenHandlerMixin implements ComponentRecipeScreenHandler<Inventory> {
+public class AbstractFurnaceScreenHandlerMixin implements ComponentRecipeScreenHandler {
     @Final
     @Shadow
     private Inventory inventory;

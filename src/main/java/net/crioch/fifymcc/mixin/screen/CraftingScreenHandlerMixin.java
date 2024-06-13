@@ -7,13 +7,14 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.RecipeInputInventory;
 import net.minecraft.recipe.Recipe;
 import net.minecraft.recipe.RecipeEntry;
+import net.minecraft.recipe.input.CraftingRecipeInput;
 import net.minecraft.screen.CraftingScreenHandler;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(CraftingScreenHandler.class)
-public class CraftingScreenHandlerMixin implements ComponentRecipeScreenHandler<RecipeInputInventory> {
+public class CraftingScreenHandlerMixin implements ComponentRecipeScreenHandler<CraftingRecipeInput> {
     @Final
     @Shadow
     private RecipeInputInventory input;
@@ -28,7 +29,7 @@ public class CraftingScreenHandlerMixin implements ComponentRecipeScreenHandler<
     }
 
     @Override
-    public boolean matchesWithComponents(RecipeEntry<? extends Recipe<RecipeInputInventory>> recipe) {
-        return recipe.value().matches(this.input, this.player.getWorld());
+    public boolean matchesWithComponents(RecipeEntry<? extends Recipe<CraftingRecipeInput>> recipe) {
+        return recipe.value().matches(this.input.createRecipeInput(), this.player.getWorld());
     }
 }

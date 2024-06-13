@@ -20,11 +20,11 @@
     "minecraft": "${minecraft_version}"
   },
   "accessWidener" : "fifymcc.accesswidener",
-	"mixins": [
-		"fifymcc.mixins.json",
-		{
-			"config": "fifymcc.client.mixins.json",
-			"environment": "client"
-		}
-	]
+  "mixins": [
+      "fifymcc.mixins.json",
+      {
+          "config": "fifymcc.client.mixins.json",
+          "environment": "client"
+      }
+  ]
 }

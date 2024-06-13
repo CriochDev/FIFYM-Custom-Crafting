@@ -5,8 +5,7 @@ import net.crioch.fifymcc.component.remainder.Remainder;
 import net.crioch.fifymcc.registry.FIFYMRegistries;
 import net.crioch.fifymcc.util.FIFYMCodecs;
 import net.crioch.fifymcc.util.Util;
-import net.minecraft.component.DataComponentType;
-import net.minecraft.network.codec.PacketCodec;
+import net.minecraft.component.ComponentType;
 import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
@@ -16,12 +15,14 @@ import net.minecraft.util.dynamic.Codecs;
 
 import java.util.function.UnaryOperator;
 
+import javax.sound.sampled.Port;
+
 public class FIFYMDataComponentTypes {
-    public static DataComponentType<Integer> BREWING_STAND_FUEL;
-    public static DataComponentType<Float> COMPOST_CHANCE;
-    public static DataComponentType<Integer> ENCHANTABILITY;
-    public static DataComponentType<Integer> FUEL_VALUE;
-    public static DataComponentType<Remainder> RECIPE_REMAINDER;
+    public static ComponentType<Integer> BREWING_STAND_FUEL;
+    public static ComponentType<Float> COMPOST_CHANCE;
+    public static ComponentType<Integer> ENCHANTABILITY;
+    public static ComponentType<Integer> FUEL_VALUE;
+    public static ComponentType<Remainder> RECIPE_REMAINDER;
 
     public static void register() {
         // Simple components
@@ -35,7 +36,7 @@ public class FIFYMDataComponentTypes {
         RECIPE_REMAINDER = FIFYMDataComponentTypes.register("recipe_remainder", builder -> builder.codec(remainderCodec));
     }
 
-    private static <T> DataComponentType<T> register(String id, UnaryOperator<DataComponentType.Builder<T>> builderOperator) {
-        return Registry.register(Registries.DATA_COMPONENT_TYPE, new Identifier(Util.MOD_ID, id), (builderOperator.apply(DataComponentType.builder())).build());
+    private static <T> ComponentType<T> register(String id, UnaryOperator<ComponentType.Builder<T>> builderOperator) {
+        return Registry.register(Registries.DATA_COMPONENT_TYPE, Identifier.of(Util.MOD_ID, id), (builderOperator.apply(ComponentType.builder())).build());
     }
 }
