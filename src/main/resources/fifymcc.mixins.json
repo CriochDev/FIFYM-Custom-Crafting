@@ -15,6 +15,7 @@
     "recipe.IngredientMixin",
     "recipe.InputSlotFillerMixin",
     "recipe.RecipeMixin",
+    "recipe.RepairItemRecipeMixin",
     "recipe.ShapelessRecipeMixin",
     "recipe.SmithingTransformRecipeMixin",
     "screen.AbstractFurnaceScreenHandlerMixin",
