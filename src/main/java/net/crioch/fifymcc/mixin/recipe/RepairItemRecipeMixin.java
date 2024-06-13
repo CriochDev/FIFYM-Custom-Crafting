@@ -15,14 +15,14 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 @Mixin(RepairItemRecipe.class)
 public class RepairItemRecipeMixin {
 
-    @ModifyReturnValue(method = "craft(Lnet/minecraft/inventory/RecipeInputInventory;Lnet/minecraft/registry/RegistryWrapper$WrapperLookup;)Lnet/minecraft/item/ItemStack;", at = @At(value = "RETURN", ordinal = 1))
+    @ModifyReturnValue(method = "craft(Lnet/minecraft/recipe/input/CraftingRecipeInput;Lnet/minecraft/registry/RegistryWrapper$WrapperLookup;)Lnet/minecraft/item/ItemStack;", at = @At(value = "RETURN", ordinal = 1))
     private ItemStack copyOverComponents(ItemStack result, @Local(ordinal = 0) ItemStack first) {
         ComponentChanges.Builder builder = ComponentChanges.builder();
         builder.add(DataComponentTypes.DAMAGE, result.get(DataComponentTypes.DAMAGE));
         builder.add(DataComponentTypes.ENCHANTMENTS, result.get(DataComponentTypes.ENCHANTMENTS));
         ComponentMap originals = first.getItem().getComponents();
         for (Component<?> component : first.getComponents()) {
-            DataComponentType<?> type = component.type();
+            ComponentType<?> type = component.type();
             if (originals.get(type) != component.value() && (type != DataComponentTypes.DAMAGE && type != DataComponentTypes.ENCHANTMENTS)) {
                 builder.add(component);
             }
@@ -49,7 +49,7 @@ public class RepairItemRecipeMixin {
     }
 
     @Unique
-    private static boolean isUncomparable(DataComponentType<?> type) {
+    private static boolean isUncomparable(ComponentType<?> type) {
         return type == DataComponentTypes.ENCHANTMENTS || type == DataComponentTypes.DAMAGE;
     }
 }
