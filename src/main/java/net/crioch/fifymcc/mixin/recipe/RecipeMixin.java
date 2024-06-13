@@ -7,6 +7,7 @@ import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.Recipe;
 import net.minecraft.recipe.RepairItemRecipe;
+import net.minecraft.recipe.input.RecipeInput;
 import net.minecraft.util.collection.DefaultedList;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -14,15 +15,14 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(Recipe.class)
-public interface RecipeMixin<C extends Inventory> {
+public interface RecipeMixin<C extends RecipeInput> {
     @Inject(method = "getRemainder", at = @At("HEAD"), cancellable = true)
-    private <C extends Inventory> void replaceGetRecipeRemainder(C inventory, CallbackInfoReturnable<DefaultedList<ItemStack>> cir) {
+    private void replaceGetRecipeRemainder(C input, CallbackInfoReturnable<DefaultedList<ItemStack>> cir) {
 
-        DefaultedList<ItemStack> defaultedList = DefaultedList.ofSize(inventory.size(), ItemStack.EMPTY);
+        DefaultedList<ItemStack> defaultedList = DefaultedList.ofSize(input.getSize(), ItemStack.EMPTY);
 
         for(int i = 0; i < defaultedList.size(); ++i) {
-            ItemStack stack = inventory.getStack(i);
-
+            ItemStack stack = input.getStackInSlot(i);
             Remainder remainder = stack.get(FIFYMDataComponentTypes.RECIPE_REMAINDER);
             if (remainder != null && !(this instanceof RepairItemRecipe)) {
                 defaultedList.set(i, remainder.getRemainder(stack));

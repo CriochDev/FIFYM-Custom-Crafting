@@ -7,9 +7,10 @@ import net.crioch.fifymcc.util.Util;
 import net.minecraft.component.ComponentChanges;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
+import net.minecraft.world.World;
 
 public class StackRemainder extends Remainder {
-    public static final Identifier ID = new Identifier(Util.MOD_ID, "item_stack");
+    public static final Identifier ID = Identifier.of(Util.MOD_ID, "item_stack");
     public static final MapCodec<StackRemainder> CODEC = RecordCodecBuilder.mapCodec(
             instance -> instance.group(
                     ItemStack.REGISTRY_ENTRY_CODEC.fieldOf("id").forGetter(StackRemainder::stack),
@@ -28,7 +29,7 @@ public class StackRemainder extends Remainder {
 
 
     @Override
-    public ItemStack getRemainder(ItemStack stack) {
+    public ItemStack getRemainder(ItemStack stack, World world) {
         return this.stack.copy();
     }
 

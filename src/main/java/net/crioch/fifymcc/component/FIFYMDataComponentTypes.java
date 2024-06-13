@@ -4,7 +4,7 @@ import com.mojang.serialization.Codec;
 import net.crioch.fifymcc.component.remainder.Remainder;
 import net.crioch.fifymcc.registry.FIFYMRegistries;
 import net.crioch.fifymcc.util.Util;
-import net.minecraft.component.DataComponentType;
+import net.minecraft.component.ComponentType;
 import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
@@ -14,9 +14,9 @@ import net.minecraft.util.dynamic.Codecs;
 import java.util.function.UnaryOperator;
 
 public class FIFYMDataComponentTypes {
-    public static DataComponentType<Integer> ENCHANTABILITY;
-    public static DataComponentType<Integer> FUEL_VALUE;
-    public static DataComponentType<Remainder> RECIPE_REMAINDER;
+    public static ComponentType<Integer> ENCHANTABILITY;
+    public static ComponentType<Integer> FUEL_VALUE;
+    public static ComponentType<Remainder> RECIPE_REMAINDER;
 
     public static void register() {
         ENCHANTABILITY = FIFYMDataComponentTypes.register("enchantability", builder -> builder.codec(Codecs.NONNEGATIVE_INT).packetCodec(PacketCodecs.VAR_INT));
@@ -25,7 +25,7 @@ public class FIFYMDataComponentTypes {
         RECIPE_REMAINDER = FIFYMDataComponentTypes.register("recipe_remainder", builder -> builder.codec(remainderCodec));
     }
 
-    private static <T> DataComponentType<T> register(String id, UnaryOperator<DataComponentType.Builder<T>> builderOperator) {
-        return Registry.register(Registries.DATA_COMPONENT_TYPE, new Identifier(Util.MOD_ID, id), (builderOperator.apply(DataComponentType.builder())).build());
+    private static <T> ComponentType<T> register(String id, UnaryOperator<ComponentType.Builder<T>> builderOperator) {
+        return Registry.register(Registries.DATA_COMPONENT_TYPE, Identifier.of(Util.MOD_ID, id), (builderOperator.apply(ComponentType.builder())).build());
     }
 }

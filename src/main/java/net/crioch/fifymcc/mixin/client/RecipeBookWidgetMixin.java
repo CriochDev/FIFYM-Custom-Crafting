@@ -24,7 +24,7 @@ public class RecipeBookWidgetMixin {
     @Shadow
     private ClientRecipeBook recipeBook;
     @Shadow
-    protected AbstractRecipeScreenHandler<?> craftingScreenHandler;
+    protected AbstractRecipeScreenHandler<?, ?> craftingScreenHandler;
 
     @Unique
     private final ComponentRecipeMatcher matcher = new ComponentRecipeMatcher();

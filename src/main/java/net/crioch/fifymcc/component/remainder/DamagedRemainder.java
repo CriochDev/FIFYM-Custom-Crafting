@@ -5,15 +5,20 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.crioch.fifymcc.util.Util;
 import net.minecraft.component.DataComponentTypes;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.enchantment.Enchantments;
-import net.minecraft.enchantment.UnbreakingEnchantment;
+import net.minecraft.component.type.ItemEnchantmentsComponent;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.ItemStack;
+import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.dynamic.Codecs;
+import net.minecraft.world.World;
+import org.apache.commons.lang3.mutable.MutableFloat;
+
+import java.util.Set;
 
 public class DamagedRemainder extends RemainderWithSeed {
-    public static final Identifier ID = new Identifier(Util.MOD_ID, "damaged");
+    public static final Identifier ID = Identifier.of(Util.MOD_ID, "damaged");
 
     public static final MapCodec<DamagedRemainder> CODEC = RecordCodecBuilder.mapCodec(
             instance -> instance.group(
@@ -40,20 +45,21 @@ public class DamagedRemainder extends RemainderWithSeed {
     }
 
     @Override
-    public ItemStack getRemainder(ItemStack stack) {
-        ItemStack remainder = super.getRemainder(stack);
+    public ItemStack getRemainder(ItemStack stack, World world) {
+        ItemStack remainder = super.getRemainder(stack, world);
         if (stack.isDamageable()) {
             remainder = stack.copy();
             int damage = this.damage;
-            int level = EnchantmentHelper.getLevel(Enchantments.UNBREAKING, stack);
-            int prevented = 0;
+            ItemEnchantmentsComponent enchantments = stack.get(DataComponentTypes.ENCHANTMENTS);
 
-            for(int k = 0; level > 0 && k < damage; ++k) {
-                if (UnbreakingEnchantment.shouldPreventDamage(stack, level, random)) {
-                    ++prevented;
+            Set<RegistryEntry<Enchantment>> enchantmentSet = enchantments != null ? enchantments.getEnchantments() : Set.of();
+            if (world != null && !world.isClient && !enchantmentSet.isEmpty()) {
+                MutableFloat floatDamage = new MutableFloat(damage);
+                for (RegistryEntry<Enchantment> entry : enchantmentSet) {
+                    entry.value().modifyItemDamage((ServerWorld) world, enchantments.getLevel(entry), stack, floatDamage);
                 }
+                damage = floatDamage.intValue();
             }
-            damage -= prevented;
 
             if (damage > 0) {
                 damage += remainder.getDamage();

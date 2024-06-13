@@ -1,7 +1,9 @@
 package net.crioch.fifymcc.component.remainder;
 
 import net.crioch.fifymcc.interfaces.RandomGetSeed;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.random.Random;
+import net.minecraft.world.World;
 
 public abstract class RemainderWithSeed extends Remainder {
     protected final Random random = Random.create();
