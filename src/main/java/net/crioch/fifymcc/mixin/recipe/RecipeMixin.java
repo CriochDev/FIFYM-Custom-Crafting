@@ -1,10 +1,12 @@
 package net.crioch.fifymcc.mixin.recipe;
 
 import net.crioch.fifymcc.component.FIFYMDataComponentTypes;
+import net.crioch.fifymcc.component.remainder.Remainder;
 import net.minecraft.component.ComponentMap;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.Recipe;
+import net.minecraft.recipe.RepairItemRecipe;
 import net.minecraft.util.collection.DefaultedList;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -20,9 +22,10 @@ public interface RecipeMixin<C extends Inventory> {
 
         for(int i = 0; i < defaultedList.size(); ++i) {
             ItemStack stack = inventory.getStack(i);
-            ComponentMap components = stack.getComponents();
-            if (components.contains(FIFYMDataComponentTypes.RECIPE_REMAINDER)) {
-                defaultedList.set(i, components.get(FIFYMDataComponentTypes.RECIPE_REMAINDER).getRemainder(stack));
+
+            Remainder remainder = stack.get(FIFYMDataComponentTypes.RECIPE_REMAINDER);
+            if (remainder != null && !(this instanceof RepairItemRecipe)) {
+                defaultedList.set(i, remainder.getRemainder(stack));
             }
         }
 
