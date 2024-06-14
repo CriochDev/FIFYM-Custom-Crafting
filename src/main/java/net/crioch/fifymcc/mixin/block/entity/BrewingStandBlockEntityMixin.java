@@ -36,7 +36,7 @@ public class BrewingStandBlockEntityMixin implements BrewingStandBlockEntityFuel
         if (fuelValue != 0 && adjustedFuelValue < 21) {
             getSetter.setFuel(adjustedFuelValue);
             if (remainder != null) {
-                blockEntity.setStack(4, remainder.getRemainder(fuel));
+                blockEntity.setStack(4, remainder.getRemainder(fuel, world));
             } else {
                 fuel.decrement(1);
             }
