@@ -7,12 +7,32 @@ This mod fixes that and allows all recipe types to benefit.
 
 ## New Components
 ### Enchantability
-This component is written in json as `"fifymcc:enchantablity": <any non-negative integer>`. When this is on an itemstack, the value in it is used to determine enchantability.
+This component is written in json as `"fifymcc:enchantablity": <any non-negative integer>`.
+
+When this is on an item stack, the value in it is used to determine enchantability.
+
+To prevent an item from being enchantable, you can remove the component like so: `!fifymcc:enchantablity": {}`
 
 ### Fuel Value
-This component is written in json as `"fifymcc:fuel_value": <any positive integer>`. When this is on an item stack, the value in it is used to determin whether it can be used as fuel and for how long, in ticks, it'll burn.
+This component is written in json as `"fifymcc:fuel_value": <any positive integer>`.
 
-If you wish to remove the ability for a fuel item to burn, you can do `"!fifymcc:fuel_value": {}` instead.
+When this is on an item stack, the value in it is used to determine whether it can be used as fuel and for how long, in ticks, it'll burn.
+
+It can be removed like the Enchantability component.
+
+### Brewing Stand Fuel Value
+This component is written in json as `"fifymcc:brewing_fuel": <integer from 1 to 20>`.
+
+When this is on an item stack, it can be used as fuel in the Brewing Stand.
+
+It can be removed.
+
+### Compost Chance
+This component is written in json as `"fifymcc:compost_chance": <float between 0 and 1>`.
+
+This makes the item stack compostable with the specified chance to increase the level of compost in the Composter.
+
+It can be removed.
 
 ### Recipe Remainder
 This component gives item stacks the ability to change how they are consumed within recipes. The base json for this is `"fifymcc:recipe_remainder: { "type": <remainder identifier>, ...additional fields }`.
@@ -112,13 +132,19 @@ Below is a shapeless crafting recipe that takes a poisonous potato that has been
 - Furnace and any derived block (Smoker, Blast Furnce, etc.). Affects both input and fuel slot
 - Smithing Table (Only `minecraft:smithing_transform` recipes for now. Trim recipes will be updated soon)
 - Loom (Only Dye slot)
+- Brewing Stand
+- Composter
+
+## Block Entity Changes
+### Brewing Stand
+The brewing stand will fill its fuel level from the fuel slot if its fuel level is low enough to accept the fuel's brewing fuel value.
 
 
 ## Caveats
+- Potion crafting remains unchanged, but both the fuel slot and the ingredient slot respect recipe remainders.
 - Due to how EMI, JEI, and REI use items to look up recipes involving them, these custom recipes will be associated with the item used or produced by them and won't show up as seperate item within their GUIs.
 - I have not tested this outside of the vanilla crafting space. This may or may not work with mods that provide their own crafting functionality outside of the vanilla crafting blocks. If the mod in question uses the builtin Ingredient.test() method, then it should be compatible.
 
 ## Roadmap
 - Get anvil working with custom remainders
 - New component to allow specifying repair ingredient
-- Add component to specify repair ingredient
