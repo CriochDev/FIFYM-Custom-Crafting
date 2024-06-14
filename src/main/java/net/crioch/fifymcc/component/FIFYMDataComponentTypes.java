@@ -5,10 +5,12 @@ import net.crioch.fifymcc.component.remainder.Remainder;
 import net.crioch.fifymcc.registry.FIFYMRegistries;
 import net.crioch.fifymcc.util.Util;
 import net.minecraft.component.DataComponentType;
+import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.Unit;
 import net.minecraft.util.dynamic.Codecs;
 
 import java.util.function.UnaryOperator;
@@ -16,6 +18,7 @@ import java.util.function.UnaryOperator;
 public class FIFYMDataComponentTypes {
     public static DataComponentType<Integer> ENCHANTABILITY;
     public static DataComponentType<Integer> FUEL_VALUE;
+    public static DataComponentType<Integer> BREWING_STAND_FUEL;
     public static DataComponentType<Remainder> RECIPE_REMAINDER;
 
     public static void register() {
@@ -23,6 +26,7 @@ public class FIFYMDataComponentTypes {
         FUEL_VALUE = FIFYMDataComponentTypes.register("fuel_value", builder -> builder.codec(Codecs.POSITIVE_INT).packetCodec(PacketCodecs.VAR_INT));
         Codec<Remainder> remainderCodec = FIFYMRegistries.REMAINDER_TYPE_REGISTRY.getCodec().dispatch("type", Remainder::getType, Remainder.Type::codec);
         RECIPE_REMAINDER = FIFYMDataComponentTypes.register("recipe_remainder", builder -> builder.codec(remainderCodec));
+        BREWING_STAND_FUEL = FIFYMDataComponentTypes.register("brewing_stand_fuel", builder -> builder.codec(Codecs.rangedInt(1, 20)).packetCodec(PacketCodecs.VAR_INT));
     }
 
     private static <T> DataComponentType<T> register(String id, UnaryOperator<DataComponentType.Builder<T>> builderOperator) {
