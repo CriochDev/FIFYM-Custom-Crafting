@@ -3,7 +3,7 @@ package net.crioch.fifymcc.component.remainder;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.crioch.fifymcc.util.FIFYCodecs;
+import net.crioch.fifymcc.util.FIFYMCodecs;
 import net.crioch.fifymcc.util.Util;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.item.ItemStack;
@@ -14,7 +14,7 @@ public class ChanceRemainder extends RemainderWithSeed {
 
     public static final MapCodec<ChanceRemainder> CODEC = (RecordCodecBuilder.mapCodec(
             instance -> instance.group(
-                    FIFYCodecs.FLOAT_CHANCE.fieldOf("break_chance").forGetter(ChanceRemainder::chance),
+                    FIFYMCodecs.FLOAT_CHANCE.fieldOf("break_chance").forGetter(ChanceRemainder::chance),
                     Codec.LONG.optionalFieldOf("seed", 0L).forGetter(ChanceRemainder::getSeed)
             ).apply(instance, ChanceRemainder::new)
     ));

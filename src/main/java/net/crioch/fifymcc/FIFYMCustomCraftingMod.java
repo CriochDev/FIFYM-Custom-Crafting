@@ -5,6 +5,7 @@ import net.crioch.fifymcc.component.remainder.RemainderTypes;
 import net.crioch.fifymcc.component.remainder.StackRemainder;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.item.v1.DefaultItemComponentEvents;
+import net.minecraft.block.ComposterBlock;
 import net.minecraft.block.entity.AbstractFurnaceBlockEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -41,6 +42,11 @@ public class FIFYMCustomCraftingMod implements ModInitializer {
                 if (item.hasRecipeRemainder()) {
                     Item remainder = item.getRecipeRemainder();
                     context.modify(item, components -> components.add(FIFYMDataComponentTypes.RECIPE_REMAINDER, new StackRemainder(new ItemStack(remainder))));
+                }
+
+                // Add compost chance, if applicable
+                if (ComposterBlock.ITEM_TO_LEVEL_INCREASE_CHANCE.containsKey(item)) {
+                    context.modify(item, components -> components.add(FIFYMDataComponentTypes.COMPOST_CHANCE, ComposterBlock.ITEM_TO_LEVEL_INCREASE_CHANCE.getFloat(item)));
                 }
             }
 

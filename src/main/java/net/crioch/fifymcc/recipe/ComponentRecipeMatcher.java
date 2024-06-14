@@ -71,7 +71,7 @@ public class ComponentRecipeMatcher {
     public static RecipeKey getKey(ItemStack stack) {
         ComponentChanges componentChanges = stack.getComponentChanges();
         int originalStackHash = componentChanges.hashCode();
-        componentChanges = FIFYMRecipeMatcherHelper.filterWithBlacklist(stack);
+        componentChanges = FIFYMHelper.filterWithBlacklist(stack);
         return new RecipeKey(ComponentRecipeMatcher.getItemId(stack), componentChanges.hashCode(), originalStackHash);
     }
 
