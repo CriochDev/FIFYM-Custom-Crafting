@@ -83,7 +83,7 @@ Below is a shapeless crafting recipe that takes a poisonous potato that has been
             "item": "minecraft:bone_meal",
             "components": {
                 // This bonemeal will not be cosumed by the recipe
-                "fifymcc:recipe_remainder": { "type"}
+                "fifymcc:recipe_remainder": { "type": "fifymcc:unconsumed" }
             }
         },
         {
