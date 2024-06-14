@@ -1,5 +1,6 @@
 package net.crioch.fifymcc.recipe;
 
+import com.google.common.collect.Sets;
 import net.crioch.fifymcc.component.FIFYMDataComponentTypes;
 import net.crioch.fifymcc.component.remainder.DamagedRemainder;
 import net.minecraft.component.ComponentChanges;
@@ -8,12 +9,9 @@ import net.minecraft.component.DataComponentTypes;
 import net.minecraft.item.ItemStack;
 
 import java.util.HashSet;
-import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Stream;
 
-public class FIFYMRecipeMatcherHelper {
+public class FIFYMHelper {
     private static final Set<DataComponentType<?>> BLACKLISTED_COMPONENTS;
 
     static {
@@ -49,5 +47,9 @@ public class FIFYMRecipeMatcherHelper {
                         || (dataComponentType == DataComponentTypes.DAMAGE && !allowDamageComponent)
                         || (dataComponentType == DataComponentTypes.ENCHANTMENTS && !allowEnchantments)
         );
+    }
+
+    public static boolean stacksAreExactlyEqual(ItemStack stack1, ItemStack stack2) {
+        return stack1.isOf(stack2.getItem()) && Sets.difference(stack1.getComponentChanges().entrySet(), stack2.getComponentChanges().entrySet()).isEmpty();
     }
 }
