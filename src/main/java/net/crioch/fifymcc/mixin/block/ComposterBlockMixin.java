@@ -18,7 +18,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(ComposterBlock.class)
 public class ComposterBlockMixin {
-    @Redirect(method = "onUseWithItem", at = @At(value = "INVOKE", target = "Lit/unimi/dsi/fastutil/objects/Object2FloatMap;containsKey(Ljava/lang/Object;)Z"))
+    @Redirect(method = "onUseWithItem", at = @At(value = "INVOKE", target = "Lit/unimi/dsi/fastutil/objects/Object2FloatMap;containsKey(Ljava/lang/Object;)Z", remap = false))
     private boolean checkForCompostComponent(Object2FloatMap instance, Object object, @Local(argsOnly = true) ItemStack stack) {
         return stack.getOrDefault(FIFYMDataComponentTypes.COMPOST_CHANCE, 0.0f) > 0.0f;
     }
@@ -46,5 +46,10 @@ public class ComposterBlockMixin {
             }
 
         }
+    }
+
+    @Redirect(method = "addToComposter", at = @At(value = "INVOKE", target = "Lit/unimi/dsi/fastutil/objects/Object2FloatMap;getFloat(Ljava/lang/Object;)F", remap = false))
+    private static float retrieveCompostComponentValue(Object2FloatMap instance, Object object, @Local(argsOnly = true) ItemStack stack) {
+        return stack.getOrDefault(FIFYMDataComponentTypes.COMPOST_CHANCE, 0.0f);
     }
 }
